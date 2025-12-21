@@ -9,9 +9,464 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
         body {
-            margin: 0;
-            padding: 0;
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          overflow-x: hidden;
+          background: #FAFAFA;
+        }
+
+        .container {
+          position: relative;
+          background: #FAFAFA;
+          min-height: 100vh;
+          overflow-x: hidden;
+        }
+
+        .glass-layer {
+          background: rgba(255, 255, 255, 0.4);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-layer-strong {
+          background: rgba(255, 255, 255, 0.6);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .text-fluid-xl {
+          font-size: clamp(3rem, 8vw, 9rem);
+          line-height: 0.9;
+          font-weight: 900;
+          letter-spacing: -0.04em;
+          color: #0A0A0A;
+        }
+
+        .text-fluid-md {
+          font-size: clamp(1.5rem, 3vw, 2.5rem);
+          line-height: 1.2;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: #0A0A0A;
+        }
+
+        .mono {
+          font-family: 'JetBrains Mono', monospace;
+        }
+
+        .scroll-indicator {
+          position: fixed;
+          left: 40px;
+          top: 0;
+          width: 2px;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.05);
+          z-index: 1000;
+        }
+
+        .scroll-progress {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background: #000;
+          transition: height 0.1s ease-out;
+        }
+
+        .liquid-blob {
+          position: fixed;
+          width: 600px;
+          height: 600px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+          filter: blur(60px);
+          pointer-events: none;
+          transition: transform 0.2s ease-out;
+          z-index: 0;
+        }
+
+        .section {
+          position: relative;
+          padding: 128px 24px;
+          max-width: 1280px;
+          margin: 0 auto;
+        }
+
+        .hero-section {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+
+        .hero-content {
+          max-width: 1280px;
+          width: 100%;
+        }
+
+        .subtitle-glass {
+          display: inline-block;
+          padding: 16px 32px;
+          margin-bottom: 32px;
+          font-size: 1.125rem;
+          font-weight: 500;
+          color: #0A0A0A;
+        }
+
+        .contact-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 24px;
+          font-size: 0.875rem;
+          font-family: 'JetBrains Mono', monospace;
+          color: #666;
+        }
+
+        .contact-links a {
+          color: #666;
+          text-decoration: none;
+          transition: color 0.3s;
+        }
+
+        .contact-links a:hover {
+          color: #0A0A0A;
+        }
+
+        .education-card, .experience-card {
+          padding: 48px;
+          margin-bottom: 48px;
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+
+        .card-title {
+          font-size: 1.875rem;
+          font-weight: 700;
+          color: #0A0A0A;
+          margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+          font-size: 1.25rem;
+          color: #666;
+          margin-bottom: 16px;
+        }
+
+        .card-meta {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.875rem;
+          color: #0A0A0A;
+          font-weight: 500;
+        }
+
+        .card-date {
+          text-align: right;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.875rem;
+          color: #666;
+        }
+
+        .card-divider {
+          border-top: 1px solid rgba(10, 10, 10, 0.1);
+          padding-top: 24px;
+          margin-top: 24px;
+          color: #666;
+          line-height: 1.6;
+        }
+
+        .projects-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+
+        .project-card {
+          padding: 32px;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-card:hover {
+          transform: translateY(-8px);
+        }
+
+        .project-type {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.75rem;
+          color: #666;
+          margin-bottom: 8px;
+        }
+
+        .project-name {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #0A0A0A;
+          margin-bottom: 12px;
+        }
+
+        .project-tech {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.75rem;
+          color: #0A0A0A;
+          opacity: 0.6;
+          margin-bottom: 16px;
+        }
+
+        .project-desc {
+          color: #666;
+          line-height: 1.6;
+          font-size: 0.875rem;
+          margin-bottom: 16px;
+        }
+
+        .project-cta {
+          display: flex;
+          align-items: center;
+          color: #0A0A0A;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .skills-section {
+          margin-bottom: 48px;
+        }
+
+        .skills-category {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #0A0A0A;
+          margin-bottom: 16px;
+        }
+
+        .skills-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-bottom: 48px;
+        }
+
+        .skill-tag {
+          padding: 8px 16px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.875rem;
+          color: #0A0A0A;
+          transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+          transform: scale(1.05);
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        .leadership-card {
+          padding: 32px;
+          margin-bottom: 32px;
+        }
+
+        .leadership-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 16px;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .leadership-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #0A0A0A;
+        }
+
+        .leadership-date {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.875rem;
+          color: #666;
+        }
+
+        .leadership-desc {
+          color: #666;
+          line-height: 1.6;
+        }
+
+        .cert-section {
+          padding: 32px;
+        }
+
+        .cert-item {
+          margin-bottom: 24px;
+        }
+
+        .cert-title {
+          font-weight: 700;
+          color: #0A0A0A;
+          margin-bottom: 8px;
+        }
+
+        .cert-desc {
+          color: #666;
+        }
+
+        .footer {
+          position: relative;
+          padding: 80px 24px;
+          border-top: 1px solid rgba(10, 10, 10, 0.1);
+          text-align: center;
+        }
+
+        .footer-text {
+          color: #666;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.875rem;
+          margin-bottom: 16px;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(250, 250, 250, 0.95);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          z-index: 50;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+
+        .modal-content {
+          max-width: 896px;
+          width: 100%;
+          padding: 48px;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          margin-bottom: 32px;
+        }
+
+        .modal-title {
+          font-size: 2.25rem;
+          font-weight: 700;
+          color: #0A0A0A;
+          margin-bottom: 12px;
+        }
+
+        .modal-close {
+          background: none;
+          border: none;
+          font-size: 2rem;
+          color: #0A0A0A;
+          cursor: pointer;
+          transition: opacity 0.3s;
+        }
+
+        .modal-close:hover {
+          opacity: 0.6;
+        }
+
+        .modal-body {
+          color: #0A0A0A;
+          line-height: 1.6;
+          margin-bottom: 32px;
+        }
+
+        .modal-body p {
+          margin-bottom: 24px;
+        }
+
+        .modal-body p:first-child {
+          font-size: 1.125rem;
+        }
+
+        .modal-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 24px;
+          color: #0A0A0A;
+          font-weight: 500;
+          text-decoration: none;
+          transition: all 0.3s;
+        }
+
+        .modal-link:hover {
+          background: #0A0A0A;
+          color: white;
+        }
+
+        .experience-content {
+          color: #0A0A0A;
+          line-height: 1.6;
+        }
+
+        .experience-content p {
+          margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+          .section {
+            padding: 128px 80px;
+          }
+
+          .hero-section {
+            padding: 80px;
+          }
+
+          .subtitle-glass {
+            font-size: 1.25rem;
+          }
+
+          .contact-links {
+            font-size: 1rem;
+          }
+
+          .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .scroll-indicator {
+            display: block;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .scroll-indicator {
+            display: none;
+          }
+
+          .education-card, .experience-card {
+            padding: 32px;
+          }
+
+          .modal-content {
+            padding: 32px;
+          }
+
+          .modal-title {
+            font-size: 1.5rem;
+          }
         }
     </style>
 </head>
@@ -105,133 +560,11 @@
           };
 
           return (
-            <div ref={containerRef} className="relative bg-[#FAFAFA] min-h-screen overflow-x-hidden">
-              <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
-                
-                * {
-                  margin: 0;
-                  padding: 0;
-                  box-sizing: border-box;
-                }
-
-                body {
-                  font-family: 'Inter', sans-serif;
-                  -webkit-font-smoothing: antialiased;
-                  overflow-x: hidden;
-                }
-
-                .glass-layer {
-                  background: rgba(255, 255, 255, 0.4);
-                  backdrop-filter: blur(20px);
-                  border: 1px solid rgba(0, 0, 0, 0.05);
-                }
-
-                .glass-layer-strong {
-                  background: rgba(255, 255, 255, 0.6);
-                  backdrop-filter: blur(40px);
-                  border: 1px solid rgba(0, 0, 0, 0.08);
-                }
-
-                .text-fluid-xl {
-                  font-size: clamp(3rem, 8vw, 9rem);
-                  line-height: 0.9;
-                  font-weight: 900;
-                  letter-spacing: -0.04em;
-                }
-
-                .text-fluid-lg {
-                  font-size: clamp(2rem, 4vw, 4rem);
-                  line-height: 1;
-                  font-weight: 900;
-                  letter-spacing: -0.03em;
-                }
-
-                .text-fluid-md {
-                  font-size: clamp(1.5rem, 3vw, 2.5rem);
-                  line-height: 1.2;
-                  font-weight: 700;
-                  letter-spacing: -0.02em;
-                }
-
-                .mono {
-                  font-family: 'JetBrains Mono', monospace;
-                }
-
-                .scroll-indicator {
-                  position: fixed;
-                  left: 40px;
-                  top: 0;
-                  width: 2px;
-                  height: 100vh;
-                  background: rgba(0, 0, 0, 0.05);
-                  z-index: 1000;
-                }
-
-                .scroll-progress {
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  width: 100%;
-                  background: #000;
-                  transition: height 0.1s ease-out;
-                }
-
-                .liquid-blob {
-                  position: fixed;
-                  width: 600px;
-                  height: 600px;
-                  border-radius: 50%;
-                  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-                  filter: blur(60px);
-                  pointer-events: none;
-                  transition: transform 0.2s ease-out;
-                  z-index: 0;
-                }
-
-                .section-reveal {
-                  opacity: 0;
-                  transform: translateY(60px);
-                  animation: revealSection 1s ease-out forwards;
-                }
-
-                @keyframes revealSection {
-                  to {
-                    opacity: 1;
-                    transform: translateY(0);
-                  }
-                }
-
-                .project-card {
-                  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                .project-card:hover {
-                  transform: translateY(-8px);
-                }
-
-                .skill-tag {
-                  transition: all 0.3s ease;
-                }
-
-                .skill-tag:hover {
-                  transform: scale(1.05);
-                  background: rgba(0, 0, 0, 0.05);
-                }
-
-                @media (max-width: 768px) {
-                  .scroll-indicator {
-                    left: 20px;
-                  }
-                }
-              `}</style>
-
-              {/* Scroll Progress Indicator */}
-              <div className="scroll-indicator hidden md:block">
+            <div ref={containerRef} className="container">
+              <div className="scroll-indicator">
                 <div className="scroll-progress" style={{ height: `${scrollProgress * 100}%` }} />
               </div>
 
-              {/* Liquid Cursor Blob */}
               <div 
                 className="liquid-blob"
                 style={{
@@ -240,262 +573,226 @@
                 }}
               />
 
-              {/* Hero Section */}
-              <section className="relative min-h-screen flex items-center justify-center px-6 md:px-20">
-                <div className="max-w-7xl w-full">
+              <section className="hero-section">
+                <div className="hero-content">
                   <div 
-                    className="text-fluid-xl text-[#0A0A0A] mb-8"
+                    className="text-fluid-xl"
                     style={{
                       transform: `scale(${1 - scrollProgress * 0.3})`,
                       opacity: 1 - scrollProgress * 2,
+                      marginBottom: '32px'
                     }}
                   >
                     Ahmed Yasser<br/>Abu Alrob
                   </div>
                   
-                  <div className="glass-layer inline-block px-8 py-4 mb-8">
-                    <p className="text-lg md:text-xl text-[#0A0A0A] font-medium">
-                      Software Engineer • AI Developer • UI Architect
-                    </p>
+                  <div className="glass-layer subtitle-glass">
+                    Software Engineer • AI Developer • UI Architect
                   </div>
 
-                  <div className="flex flex-wrap gap-6 text-sm md:text-base mono text-[#666]">
-                    <a href="tel:+962777242105" className="hover:text-[#0A0A0A] transition-colors">+962 777 242 105</a>
-                    <a href="mailto:ahmed.abualrob@gmail.com" className="hover:text-[#0A0A0A] transition-colors">ahmed.abualrob@gmail.com</a>
-                    <a href="https://linkedin.com/in/ahmed-abualrob" target="_blank" rel="noopener noreferrer" className="hover:text-[#0A0A0A] transition-colors">LinkedIn</a>
-                    <a href="https://github.com/AhmadRob" target="_blank" rel="noopener noreferrer" className="hover:text-[#0A0A0A] transition-colors">GitHub</a>
+                  <div className="contact-links">
+                    <a href="tel:+962777242105">+962 777 242 105</a>
+                    <a href="mailto:ahmed.abualrob@gmail.com">ahmed.abualrob@gmail.com</a>
+                    <a href="https://linkedin.com/in/ahmed-abualrob" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="https://github.com/AhmadRob" target="_blank" rel="noopener noreferrer">GitHub</a>
                   </div>
                 </div>
               </section>
 
-              {/* Education Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Education</h2>
-                  
-                  <div className="space-y-12">
-                    <div className="glass-layer p-8 md:p-12">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
-                        <div>
-                          <h3 className="text-2xl md:text-3xl font-bold text-[#0A0A0A] mb-2">Jordan University of Science and Technology</h3>
-                          <p className="text-lg md:text-xl text-[#666] mb-4">Bachelor of Science in Software Engineering</p>
-                          <p className="mono text-sm text-[#0A0A0A] font-medium">GPA: 3.95 / 4.2</p>
-                        </div>
-                        <div className="text-right mt-4 md:mt-0">
-                          <p className="mono text-sm text-[#666]">Expected Jan 2026</p>
-                          <p className="mono text-sm text-[#666]">Irbid, Jordan</p>
-                        </div>
-                      </div>
-                      <div className="border-t border-[#0A0A0A]/10 pt-6">
-                        <p className="text-[#666] leading-relaxed">
-                          Mobile Application Development • Software Architecture & Design • Data Structures • OOP • Database Applications • Web Development • Java Programming
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="glass-layer p-8 md:p-12 opacity-60">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between">
-                        <div>
-                          <h3 className="text-xl md:text-2xl font-bold text-[#0A0A0A] mb-2">Modern Institute of the Capital</h3>
-                          <p className="text-lg text-[#666] mb-2">High School Diploma</p>
-                          <p className="mono text-sm text-[#0A0A0A] font-medium">GPA: 100 / 100</p>
-                        </div>
-                        <div className="text-right mt-4 md:mt-0">
-                          <p className="mono text-sm text-[#666]">Graduated 2021</p>
-                          <p className="mono text-sm text-[#666]">Riyadh, Saudi Arabia</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Experience Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Experience</h2>
-                  
-                  <div className="glass-layer-strong p-8 md:p-12">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8">
-                      <div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-[#0A0A0A] mb-2">Rasheed AI</h3>
-                        <p className="text-lg md:text-xl text-[#666]">AI Developer Trainee</p>
-                      </div>
-                      <div className="text-right mt-4 md:mt-0">
-                        <p className="mono text-sm text-[#0A0A0A] font-medium">Jul 2025 — Oct 2025</p>
-                        <p className="mono text-sm text-[#666]">Remote, Saudi Arabia</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4 text-[#0A0A0A] leading-relaxed">
-                      <p>Built enterprise-grade <span className="font-semibold">RPA solutions</span> with <span className="font-semibold">UiPath AI Agents</span>, developing an intelligent email responder achieving <span className="font-semibold">90% automation rate</span> and a zero-touch file management system eliminating manual processing entirely</p>
-                      
-                      <p>Developed production-ready <span className="font-semibold">AI agents</span> using <span className="font-semibold">Python, LangChain, and Streamlit</span>, creating conversational interfaces and implementing token optimization strategies that reduced API costs while maintaining performance</p>
-                      
-                      <p>Architected and launched <span className="font-semibold">Rasheed AI Academy</span> from concept to production—a full-stack training platform built with <span className="font-semibold">React</span> and <span className="font-semibold">Tailwind CSS</span>, featuring <span className="font-semibold">12 multilingual lessons</span> powered by <span className="font-semibold">Eleven Labs</span> AI voice generation, serving customers across multiple regions</p>
-                      
-                      <p>Engineered a <span className="font-semibold">zero-code update system</span> using JSON-driven architecture, enabling non-technical teams to modify course content instantly without developer intervention</p>
-                      
-                      <p>Led <span className="font-semibold">10+ client onboarding sessions</span>, providing technical training on Chat Agent customization and conversational AI best practices, directly contributing to customer success and product adoption</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Projects Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Projects</h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {projects.map((project, idx) => (
-                      <div
-                        key={project.id}
-                        className="project-card glass-layer p-8 cursor-pointer"
-                        onClick={() => setExpandedProject(project)}
-                        style={{ animationDelay: `${idx * 0.1}s` }}
-                      >
-                        <div className="mono text-xs text-[#666] mb-2">{project.type}</div>
-                        <h3 className="text-2xl font-bold text-[#0A0A0A] mb-3">{project.name}</h3>
-                        <div className="mono text-xs text-[#0A0A0A] mb-4 opacity-60">{project.tech}</div>
-                        <p className="text-[#666] leading-relaxed text-sm mb-4">{project.desc}</p>
-                        <div className="flex items-center text-[#0A0A0A] text-sm font-medium">
-                          <span>View Details</span>
-                          <span className="ml-2">→</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Skills Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Technical Expertise</h2>
-                  
-                  <div className="space-y-12">
-                    {Object.entries(skills).map(([category, items]) => (
-                      <div key={category}>
-                        <h3 className="text-xl font-bold text-[#0A0A0A] mb-4">{category}</h3>
-                        <div className="flex flex-wrap gap-3">
-                          {items.map((skill) => (
-                            <span
-                              key={skill}
-                              className="skill-tag glass-layer px-4 py-2 mono text-sm text-[#0A0A0A]"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-16 glass-layer p-8">
-                    <h3 className="text-xl font-bold text-[#0A0A0A] mb-4">Languages</h3>
-                    <p className="text-[#666]">Arabic (Native) • English (Proficient - IELTS 7.5)</p>
-                  </div>
-                </div>
-              </section>
-
-              {/* Leadership Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Leadership & Research</h2>
-                  
-                  <div className="space-y-8">
-                    <div className="glass-layer-strong p-8">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">IEEE Best Paper Contest - Top 5 in Jordan</h3>
-                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Jun 2025</span>
-                      </div>
-                      <p className="text-[#666] leading-relaxed">Co-authored <em>"EvalUI: An AI-Driven Framework for Structural Assessment of UI Layouts"</em>, achieving Top 5 national ranking and earning qualification to represent Jordan at the IEEE international competition</p>
-                    </div>
-
-                    <div className="glass-layer-strong p-8">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">EngiTek 2025 Conference</h3>
-                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Dec 2025</span>
-                      </div>
-                      <p className="text-[#666] leading-relaxed">Presenting two research papers at JUST's premier engineering conference on emotion-driven interfaces and automated UI quality assessment</p>
-                    </div>
-
-                    <div className="glass-layer p-8">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">Graduation Project Team Lead</h3>
-                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Feb 2025 — Present</span>
-                      </div>
-                      <p className="text-[#666] leading-relaxed">Leading a cross-functional 4-member team through the complete SDLC of Sentient UI, managing sprints, coordinating AI/ML research, and delivering milestone presentations</p>
-                    </div>
-
-                    <div className="glass-layer p-8">
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">IEEE AI Agent Hackathon</h3>
-                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">May 2025</span>
-                      </div>
-                      <p className="text-[#666] leading-relaxed">Competed in Jordan's inaugural university-level AI Agent hackathon, rapidly prototyping intelligent automation solutions</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Certifications Section */}
-              <section className="relative py-32 px-6 md:px-20 section-reveal">
-                <div className="max-w-7xl mx-auto">
-                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Certifications</h2>
-                  
-                  <div className="glass-layer p-8 space-y-6">
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Education</h2>
+                
+                <div className="glass-layer education-card">
+                  <div className="card-header">
                     <div>
-                      <h3 className="font-bold text-[#0A0A0A] mb-2">UiPath</h3>
-                      <p className="text-[#666]">Agentic Automation Developer Associate • Agentic Prompt Engineering</p>
+                      <h3 className="card-title">Jordan University of Science and Technology</h3>
+                      <p className="card-subtitle">Bachelor of Science in Software Engineering</p>
+                      <p className="card-meta">GPA: 3.95 / 4.2</p>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-[#0A0A0A] mb-2">Cisco Networking Academy</h3>
-                      <p className="text-[#666]">Python Essentials 1 • Introduction to Modern AI</p>
+                    <div className="card-date">
+                      <p>Expected Jan 2026</p>
+                      <p>Irbid, Jordan</p>
                     </div>
+                  </div>
+                  <div className="card-divider">
+                    Mobile Application Development • Software Architecture & Design • Data Structures • OOP • Database Applications • Web Development • Java Programming
+                  </div>
+                </div>
+
+                <div className="glass-layer education-card" style={{opacity: 0.6}}>
+                  <div className="card-header">
                     <div>
-                      <h3 className="font-bold text-[#0A0A0A] mb-2">OpenAI</h3>
-                      <p className="text-[#666]">ChatGPT for Everyone</p>
+                      <h3 className="card-title" style={{fontSize: '1.5rem'}}>Modern Institute of the Capital</h3>
+                      <p className="card-subtitle" style={{fontSize: '1.125rem'}}>High School Diploma</p>
+                      <p className="card-meta">GPA: 100 / 100</p>
+                    </div>
+                    <div className="card-date">
+                      <p>Graduated 2021</p>
+                      <p>Riyadh, Saudi Arabia</p>
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Footer */}
-              <footer className="relative py-20 px-6 md:px-20 border-t border-[#0A0A0A]/10">
-                <div className="max-w-7xl mx-auto text-center">
-                  <p className="text-[#666] mono text-sm mb-4">© 2025 Ahmed Yasser Abu Alrob</p>
-                  <p className="text-[#666] text-sm">Designed with liquid glass and monochrome precision</p>
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Experience</h2>
+                
+                <div className="glass-layer-strong experience-card">
+                  <div className="card-header">
+                    <div>
+                      <h3 className="card-title">Rasheed AI</h3>
+                      <p className="card-subtitle">AI Developer Trainee</p>
+                    </div>
+                    <div className="card-date">
+                      <p style={{color: '#0A0A0A', fontWeight: 500}}>Jul 2025 — Oct 2025</p>
+                      <p>Remote, Saudi Arabia</p>
+                    </div>
+                  </div>
+
+                  <div className="experience-content">
+                    <p>Built enterprise-grade <strong>RPA solutions</strong> with <strong>UiPath AI Agents</strong>, developing an intelligent email responder achieving <strong>90% automation rate</strong> and a zero-touch file management system eliminating manual processing entirely</p>
+                    
+                    <p>Developed production-ready <strong>AI agents</strong> using <strong>Python, LangChain, and Streamlit</strong>, creating conversational interfaces and implementing token optimization strategies that reduced API costs while maintaining performance</p>
+                    
+                    <p>Architected and launched <strong>Rasheed AI Academy</strong> from concept to production—a full-stack training platform built with <strong>React</strong> and <strong>Tailwind CSS</strong>, featuring <strong>12 multilingual lessons</strong> powered by <strong>Eleven Labs</strong> AI voice generation, serving customers across multiple regions</p>
+                    
+                    <p>Engineered a <strong>zero-code update system</strong> using JSON-driven architecture, enabling non-technical teams to modify course content instantly without developer intervention</p>
+                    
+                    <p>Led <strong>10+ client onboarding sessions</strong>, providing technical training on Chat Agent customization and conversational AI best practices, directly contributing to customer success and product adoption</p>
+                  </div>
                 </div>
+              </section>
+
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Projects</h2>
+                
+                <div className="projects-grid">
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="project-card glass-layer"
+                      onClick={() => setExpandedProject(project)}
+                    >
+                      <div className="project-type">{project.type}</div>
+                      <h3 className="project-name">{project.name}</h3>
+                      <div className="project-tech">{project.tech}</div>
+                      <p className="project-desc">{project.desc}</p>
+                      <div className="project-cta">
+                        <span>View Details</span>
+                        <span style={{marginLeft: '8px'}}>→</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Technical Expertise</h2>
+                
+                {Object.entries(skills).map(([category, items]) => (
+                  <div key={category} className="skills-section">
+                    <h3 className="skills-category">{category}</h3>
+                    <div className="skills-tags">
+                      {items.map((skill) => (
+                        <span key={skill} className="skill-tag glass-layer">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="glass-layer" style={{padding: '32px', marginTop: '64px'}}>
+                  <h3 className="skills-category">Languages</h3>
+                  <p style={{color: '#666'}}>Arabic (Native) • English (Proficient - IELTS 7.5)</p>
+                </div>
+              </section>
+
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Leadership & Research</h2>
+                
+                <div className="glass-layer-strong leadership-card">
+                  <div className="leadership-header">
+                    <h3 className="leadership-title">IEEE Best Paper Contest - Top 5 in Jordan</h3>
+                    <span className="leadership-date">Jun 2025</span>
+                  </div>
+                  <p className="leadership-desc">Co-authored <em>"EvalUI: An AI-Driven Framework for Structural Assessment of UI Layouts"</em>, achieving Top 5 national ranking and earning qualification to represent Jordan at the IEEE international competition</p>
+                </div>
+
+                <div className="glass-layer-strong leadership-card">
+                  <div className="leadership-header">
+                    <h3 className="leadership-title">EngiTek 2025 Conference</h3>
+                    <span className="leadership-date">Dec 2025</span>
+                  </div>
+                  <p className="leadership-desc">Presenting two research papers at JUST's premier engineering conference on emotion-driven interfaces and automated UI quality assessment</p>
+                </div>
+
+                <div className="glass-layer leadership-card">
+                  <div className="leadership-header">
+                    <h3 className="leadership-title">Graduation Project Team Lead</h3>
+                    <span className="leadership-date">Feb 2025 — Present</span>
+                  </div>
+                  <p className="leadership-desc">Leading a cross-functional 4-member team through the complete SDLC of Sentient UI, managing sprints, coordinating AI/ML research, and delivering milestone presentations</p>
+                </div>
+
+                <div className="glass-layer leadership-card">
+                  <div className="leadership-header">
+                    <h3 className="leadership-title">IEEE AI Agent Hackathon</h3>
+                    <span className="leadership-date">May 2025</span>
+                  </div>
+                  <p className="leadership-desc">Competed in Jordan's inaugural university-level AI Agent hackathon, rapidly prototyping intelligent automation solutions</p>
+                </div>
+              </section>
+
+              <section className="section">
+                <h2 className="text-fluid-md" style={{marginBottom: '64px'}}>Certifications</h2>
+                
+                <div className="glass-layer cert-section">
+                  <div className="cert-item">
+                    <h3 className="cert-title">UiPath</h3>
+                    <p className="cert-desc">Agentic Automation Developer Associate • Agentic Prompt Engineering</p>
+                  </div>
+                  <div className="cert-item">
+                    <h3 className="cert-title">Cisco Networking Academy</h3>
+                    <p className="cert-desc">Python Essentials 1 • Introduction to Modern AI</p>
+                  </div>
+                  <div className="cert-item" style={{marginBottom: 0}}>
+                    <h3 className="cert-title">OpenAI</h3>
+                    <p className="cert-desc">ChatGPT for Everyone</p>
+                  </div>
+                </div>
+              </section>
+
+              <footer className="footer">
+                <p className="footer-text">© 2025 Ahmed Yasser Abu Alrob</p>
+                <p style={{color: '#666', fontSize: '0.875rem'}}>Designed with liquid glass and monochrome precision</p>
               </footer>
 
-              {/* Project Expansion Modal */}
               {expandedProject && (
                 <div
-                  className="fixed inset-0 bg-[#FAFAFA]/95 backdrop-blur-xl z-50 flex items-center justify-center p-6"
+                  className="modal-overlay"
                   onClick={() => setExpandedProject(null)}
                 >
                   <div
-                    className="glass-layer-strong max-w-4xl w-full p-8 md:p-12 max-h-[90vh] overflow-y-auto"
+                    className="glass-layer-strong modal-content"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="flex justify-between items-start mb-8">
+                    <div className="modal-header">
                       <div>
-                        <div className="mono text-xs text-[#666] mb-2">{expandedProject.type}</div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A] mb-3">{expandedProject.name}</h2>
-                        <div className="mono text-sm text-[#0A0A0A] opacity-60">{expandedProject.tech}</div>
+                        <div className="project-type">{expandedProject.type}</div>
+                        <h2 className="modal-title">{expandedProject.name}</h2>
+                        <div className="project-tech">{expandedProject.tech}</div>
                       </div>
                       <button
                         onClick={() => setExpandedProject(null)}
-                        className="text-[#0A0A0A] text-2xl hover:opacity-60 transition-opacity"
+                        className="modal-close"
                       >
                         ×
                       </button>
                     </div>
 
-                    <div className="space-y-6 text-[#0A0A0A] leading-relaxed mb-8">
-                      <p className="text-lg">{expandedProject.desc}</p>
+                    <div className="modal-body">
+                      <p>{expandedProject.desc}</p>
                       <p>{expandedProject.details}</p>
                     </div>
 
@@ -503,7 +800,7 @@
                       href={expandedProject.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 glass-layer px-6 py-3 text-[#0A0A0A] font-medium hover:bg-[#0A0A0A] hover:text-white transition-all"
+                      className="modal-link glass-layer"
                     >
                       <span>View Project</span>
                       <span>↗</span>
