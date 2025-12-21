@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Yasser Abu Alrob - Software Engineer & AI Developer</title>
+    <meta name="description" content="Portfolio CV of Ahmed Yasser Abu Alrob - Software Engineer specializing in AI, Flutter, and modern web technologies">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const LiquidMonolithCV = () => {
+          const [scrollProgress, setScrollProgress] = useState(0);
+          const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+          const [expandedProject, setExpandedProject] = useState(null);
+          const containerRef = useRef(null);
+
+          useEffect(() => {
+            const handleScroll = () => {
+              const scrollTop = window.scrollY;
+              const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+              setScrollProgress(scrollTop / docHeight);
+            };
+
+            const handleMouseMove = (e) => {
+              setMousePos({ x: e.clientX, y: e.clientY });
+            };
+
+            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('mousemove', handleMouseMove);
+            return () => {
+              window.removeEventListener('scroll', handleScroll);
+              window.removeEventListener('mousemove', handleMouseMove);
+            };
+          }, []);
+
+          const projects = [
+            {
+              id: 'sentient-ui',
+              name: 'Sentient UI',
+              type: 'Graduation Project',
+              tech: 'Flutter • AI/ML • Computer Vision',
+              desc: 'Building an adaptive UI framework that revolutionizes mobile interfaces through real-time emotion detection and behavioral pattern analysis',
+              details: 'Architecting with Clean Architecture principles and modular design patterns, creating a production-ready, scalable framework for next-generation context-aware applications',
+              link: 'https://github.com/AhmadRob/sentient_ui_demo'
+            },
+            {
+              id: 'rasheed-academy',
+              name: 'Rasheed AI Academy',
+              type: 'Production Platform',
+              tech: 'React • Tailwind • Eleven Labs AI',
+              desc: 'Architected and shipped a production training platform serving real customers with 12 multilingual AI-narrated lessons',
+              details: 'Engineered a zero-code update system using JSON-driven architecture, enabling content teams to publish course modifications instantly while maintaining a polished glassmorphic UI aligned with brand standards',
+              link: 'https://rasheed-ai-academy.onrender.com/'
+            },
+            {
+              id: 'expenses-tracker',
+              name: 'Expenses Tracker',
+              type: 'Mobile App',
+              tech: 'Flutter • Firebase • Hive',
+              desc: 'Built a full-featured personal finance app with real-time budget visualizations, smart categorization, and intelligent spending alerts',
+              details: 'Designed a hybrid offline-first architecture combining Hive\'s instant local access with Firebase\'s cloud sync, ensuring zero-latency UX',
+              link: 'https://github.com/AhmadRob/expenses_tracker_app'
+            },
+            {
+              id: 'access-control',
+              name: 'Rasheed AI Access Control',
+              type: 'Auth Gateway',
+              tech: 'React • Tailwind CSS',
+              desc: 'Developing a unified SSO gateway providing seamless authentication across Rasheed AI\'s product ecosystem',
+              details: 'Implementing secure authentication flows with modern UX patterns—passwordless options, social auth integration, and intelligent role-based routing',
+              link: 'https://rasheed-ai-access-control.onrender.com/'
+            },
+            {
+              id: 'taahad',
+              name: 'Taahad',
+              type: 'Learning App',
+              tech: 'Flutter • Dart',
+              desc: 'Designing an intelligent memorization companion with adaptive revision schedules, progress tracking, and intuitive Quranic navigation',
+              details: 'Conducting iterative user research with diverse memorization skill levels to craft an accessible, engagement-focused experience',
+              link: 'https://github.com/AhmadRob/Taahad'
+            }
+          ];
+
+          const skills = {
+            'Languages': ['Dart', 'Python', 'JavaScript', 'Java', 'C++', 'C#', 'SQL', 'HTML', 'CSS'],
+            'Mobile': ['Flutter', 'Provider', 'Hive', 'Isar', 'Firebase', 'Clean Architecture', 'MVC', 'MVVM'],
+            'Web': ['React', 'Node.js', 'Express', 'Next.js', 'Tailwind', 'Bootstrap', 'RESTful APIs'],
+            'AI': ['UiPath', 'LangChain', 'Streamlit', 'Zapier', 'Make', 'Prompt Engineering', 'AI Agents', 'ML'],
+            'Data': ['MySQL', 'PostgreSQL', 'Supabase', 'Firebase', 'Oracle', 'SQL Server'],
+            'Tools': ['Git', 'GitHub', 'VS Code', 'Android Studio', 'Adobe Suite', 'Eleven Labs'],
+            'Practices': ['OOP', 'SOLID', 'Design Patterns', 'Agile', 'Unit Testing', 'Code Reviews', 'CI/CD']
+          };
+
+          return (
+            <div ref={containerRef} className="relative bg-[#FAFAFA] min-h-screen overflow-x-hidden">
+              <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+                
+                * {
+                  margin: 0;
+                  padding: 0;
+                  box-sizing: border-box;
+                }
+
+                body {
+                  font-family: 'Inter', sans-serif;
+                  -webkit-font-smoothing: antialiased;
+                  overflow-x: hidden;
+                }
+
+                .glass-layer {
+                  background: rgba(255, 255, 255, 0.4);
+                  backdrop-filter: blur(20px);
+                  border: 1px solid rgba(0, 0, 0, 0.05);
+                }
+
+                .glass-layer-strong {
+                  background: rgba(255, 255, 255, 0.6);
+                  backdrop-filter: blur(40px);
+                  border: 1px solid rgba(0, 0, 0, 0.08);
+                }
+
+                .text-fluid-xl {
+                  font-size: clamp(3rem, 8vw, 9rem);
+                  line-height: 0.9;
+                  font-weight: 900;
+                  letter-spacing: -0.04em;
+                }
+
+                .text-fluid-lg {
+                  font-size: clamp(2rem, 4vw, 4rem);
+                  line-height: 1;
+                  font-weight: 900;
+                  letter-spacing: -0.03em;
+                }
+
+                .text-fluid-md {
+                  font-size: clamp(1.5rem, 3vw, 2.5rem);
+                  line-height: 1.2;
+                  font-weight: 700;
+                  letter-spacing: -0.02em;
+                }
+
+                .mono {
+                  font-family: 'JetBrains Mono', monospace;
+                }
+
+                .scroll-indicator {
+                  position: fixed;
+                  left: 40px;
+                  top: 0;
+                  width: 2px;
+                  height: 100vh;
+                  background: rgba(0, 0, 0, 0.05);
+                  z-index: 1000;
+                }
+
+                .scroll-progress {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  background: #000;
+                  transition: height 0.1s ease-out;
+                }
+
+                .liquid-blob {
+                  position: fixed;
+                  width: 600px;
+                  height: 600px;
+                  border-radius: 50%;
+                  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+                  filter: blur(60px);
+                  pointer-events: none;
+                  transition: transform 0.2s ease-out;
+                  z-index: 0;
+                }
+
+                .section-reveal {
+                  opacity: 0;
+                  transform: translateY(60px);
+                  animation: revealSection 1s ease-out forwards;
+                }
+
+                @keyframes revealSection {
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+
+                .project-card {
+                  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                .project-card:hover {
+                  transform: translateY(-8px);
+                }
+
+                .skill-tag {
+                  transition: all 0.3s ease;
+                }
+
+                .skill-tag:hover {
+                  transform: scale(1.05);
+                  background: rgba(0, 0, 0, 0.05);
+                }
+
+                @media (max-width: 768px) {
+                  .scroll-indicator {
+                    left: 20px;
+                  }
+                }
+              `}</style>
+
+              {/* Scroll Progress Indicator */}
+              <div className="scroll-indicator hidden md:block">
+                <div className="scroll-progress" style={{ height: `${scrollProgress * 100}%` }} />
+              </div>
+
+              {/* Liquid Cursor Blob */}
+              <div 
+                className="liquid-blob"
+                style={{
+                  left: mousePos.x - 300,
+                  top: mousePos.y - 300,
+                }}
+              />
+
+              {/* Hero Section */}
+              <section className="relative min-h-screen flex items-center justify-center px-6 md:px-20">
+                <div className="max-w-7xl w-full">
+                  <div 
+                    className="text-fluid-xl text-[#0A0A0A] mb-8"
+                    style={{
+                      transform: `scale(${1 - scrollProgress * 0.3})`,
+                      opacity: 1 - scrollProgress * 2,
+                    }}
+                  >
+                    Ahmed Yasser<br/>Abu Alrob
+                  </div>
+                  
+                  <div className="glass-layer inline-block px-8 py-4 mb-8">
+                    <p className="text-lg md:text-xl text-[#0A0A0A] font-medium">
+                      Software Engineer • AI Developer • UI Architect
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-6 text-sm md:text-base mono text-[#666]">
+                    <a href="tel:+962777242105" className="hover:text-[#0A0A0A] transition-colors">+962 777 242 105</a>
+                    <a href="mailto:ahmed.abualrob@gmail.com" className="hover:text-[#0A0A0A] transition-colors">ahmed.abualrob@gmail.com</a>
+                    <a href="https://linkedin.com/in/ahmed-abualrob" target="_blank" rel="noopener noreferrer" className="hover:text-[#0A0A0A] transition-colors">LinkedIn</a>
+                    <a href="https://github.com/AhmadRob" target="_blank" rel="noopener noreferrer" className="hover:text-[#0A0A0A] transition-colors">GitHub</a>
+                  </div>
+                </div>
+              </section>
+
+              {/* Education Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Education</h2>
+                  
+                  <div className="space-y-12">
+                    <div className="glass-layer p-8 md:p-12">
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-bold text-[#0A0A0A] mb-2">Jordan University of Science and Technology</h3>
+                          <p className="text-lg md:text-xl text-[#666] mb-4">Bachelor of Science in Software Engineering</p>
+                          <p className="mono text-sm text-[#0A0A0A] font-medium">GPA: 3.95 / 4.2</p>
+                        </div>
+                        <div className="text-right mt-4 md:mt-0">
+                          <p className="mono text-sm text-[#666]">Expected Jan 2026</p>
+                          <p className="mono text-sm text-[#666]">Irbid, Jordan</p>
+                        </div>
+                      </div>
+                      <div className="border-t border-[#0A0A0A]/10 pt-6">
+                        <p className="text-[#666] leading-relaxed">
+                          Mobile Application Development • Software Architecture & Design • Data Structures • OOP • Database Applications • Web Development • Java Programming
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="glass-layer p-8 md:p-12 opacity-60">
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                        <div>
+                          <h3 className="text-xl md:text-2xl font-bold text-[#0A0A0A] mb-2">Modern Institute of the Capital</h3>
+                          <p className="text-lg text-[#666] mb-2">High School Diploma</p>
+                          <p className="mono text-sm text-[#0A0A0A] font-medium">GPA: 100 / 100</p>
+                        </div>
+                        <div className="text-right mt-4 md:mt-0">
+                          <p className="mono text-sm text-[#666]">Graduated 2021</p>
+                          <p className="mono text-sm text-[#666]">Riyadh, Saudi Arabia</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Experience Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Experience</h2>
+                  
+                  <div className="glass-layer-strong p-8 md:p-12">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8">
+                      <div>
+                        <h3 className="text-2xl md:text-3xl font-bold text-[#0A0A0A] mb-2">Rasheed AI</h3>
+                        <p className="text-lg md:text-xl text-[#666]">AI Developer Trainee</p>
+                      </div>
+                      <div className="text-right mt-4 md:mt-0">
+                        <p className="mono text-sm text-[#0A0A0A] font-medium">Jul 2025 — Oct 2025</p>
+                        <p className="mono text-sm text-[#666]">Remote, Saudi Arabia</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 text-[#0A0A0A] leading-relaxed">
+                      <p>Built enterprise-grade <span className="font-semibold">RPA solutions</span> with <span className="font-semibold">UiPath AI Agents</span>, developing an intelligent email responder achieving <span className="font-semibold">90% automation rate</span> and a zero-touch file management system eliminating manual processing entirely</p>
+                      
+                      <p>Developed production-ready <span className="font-semibold">AI agents</span> using <span className="font-semibold">Python, LangChain, and Streamlit</span>, creating conversational interfaces and implementing token optimization strategies that reduced API costs while maintaining performance</p>
+                      
+                      <p>Architected and launched <span className="font-semibold">Rasheed AI Academy</span> from concept to production—a full-stack training platform built with <span className="font-semibold">React</span> and <span className="font-semibold">Tailwind CSS</span>, featuring <span className="font-semibold">12 multilingual lessons</span> powered by <span className="font-semibold">Eleven Labs</span> AI voice generation, serving customers across multiple regions</p>
+                      
+                      <p>Engineered a <span className="font-semibold">zero-code update system</span> using JSON-driven architecture, enabling non-technical teams to modify course content instantly without developer intervention</p>
+                      
+                      <p>Led <span className="font-semibold">10+ client onboarding sessions</span>, providing technical training on Chat Agent customization and conversational AI best practices, directly contributing to customer success and product adoption</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Projects Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Projects</h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {projects.map((project, idx) => (
+                      <div
+                        key={project.id}
+                        className="project-card glass-layer p-8 cursor-pointer"
+                        onClick={() => setExpandedProject(project)}
+                        style={{ animationDelay: `${idx * 0.1}s` }}
+                      >
+                        <div className="mono text-xs text-[#666] mb-2">{project.type}</div>
+                        <h3 className="text-2xl font-bold text-[#0A0A0A] mb-3">{project.name}</h3>
+                        <div className="mono text-xs text-[#0A0A0A] mb-4 opacity-60">{project.tech}</div>
+                        <p className="text-[#666] leading-relaxed text-sm mb-4">{project.desc}</p>
+                        <div className="flex items-center text-[#0A0A0A] text-sm font-medium">
+                          <span>View Details</span>
+                          <span className="ml-2">→</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Skills Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Technical Expertise</h2>
+                  
+                  <div className="space-y-12">
+                    {Object.entries(skills).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="text-xl font-bold text-[#0A0A0A] mb-4">{category}</h3>
+                        <div className="flex flex-wrap gap-3">
+                          {items.map((skill) => (
+                            <span
+                              key={skill}
+                              className="skill-tag glass-layer px-4 py-2 mono text-sm text-[#0A0A0A]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-16 glass-layer p-8">
+                    <h3 className="text-xl font-bold text-[#0A0A0A] mb-4">Languages</h3>
+                    <p className="text-[#666]">Arabic (Native) • English (Proficient - IELTS 7.5)</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Leadership Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Leadership & Research</h2>
+                  
+                  <div className="space-y-8">
+                    <div className="glass-layer-strong p-8">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">IEEE Best Paper Contest - Top 5 in Jordan</h3>
+                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Jun 2025</span>
+                      </div>
+                      <p className="text-[#666] leading-relaxed">Co-authored <em>"EvalUI: An AI-Driven Framework for Structural Assessment of UI Layouts"</em>, achieving Top 5 national ranking and earning qualification to represent Jordan at the IEEE international competition</p>
+                    </div>
+
+                    <div className="glass-layer-strong p-8">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">EngiTek 2025 Conference</h3>
+                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Dec 2025</span>
+                      </div>
+                      <p className="text-[#666] leading-relaxed">Presenting two research papers at JUST's premier engineering conference on emotion-driven interfaces and automated UI quality assessment</p>
+                    </div>
+
+                    <div className="glass-layer p-8">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">Graduation Project Team Lead</h3>
+                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">Feb 2025 — Present</span>
+                      </div>
+                      <p className="text-[#666] leading-relaxed">Leading a cross-functional 4-member team through the complete SDLC of Sentient UI, managing sprints, coordinating AI/ML research, and delivering milestone presentations</p>
+                    </div>
+
+                    <div className="glass-layer p-8">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">IEEE AI Agent Hackathon</h3>
+                        <span className="mono text-sm text-[#666] mt-2 md:mt-0">May 2025</span>
+                      </div>
+                      <p className="text-[#666] leading-relaxed">Competed in Jordan's inaugural university-level AI Agent hackathon, rapidly prototyping intelligent automation solutions</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Certifications Section */}
+              <section className="relative py-32 px-6 md:px-20 section-reveal">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-fluid-md text-[#0A0A0A] mb-16">Certifications</h2>
+                  
+                  <div className="glass-layer p-8 space-y-6">
+                    <div>
+                      <h3 className="font-bold text-[#0A0A0A] mb-2">UiPath</h3>
+                      <p className="text-[#666]">Agentic Automation Developer Associate • Agentic Prompt Engineering</p>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#0A0A0A] mb-2">Cisco Networking Academy</h3>
+                      <p className="text-[#666]">Python Essentials 1 • Introduction to Modern AI</p>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#0A0A0A] mb-2">OpenAI</h3>
+                      <p className="text-[#666]">ChatGPT for Everyone</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Footer */}
+              <footer className="relative py-20 px-6 md:px-20 border-t border-[#0A0A0A]/10">
+                <div className="max-w-7xl mx-auto text-center">
+                  <p className="text-[#666] mono text-sm mb-4">© 2025 Ahmed Yasser Abu Alrob</p>
+                  <p className="text-[#666] text-sm">Designed with liquid glass and monochrome precision</p>
+                </div>
+              </footer>
+
+              {/* Project Expansion Modal */}
+              {expandedProject && (
+                <div
+                  className="fixed inset-0 bg-[#FAFAFA]/95 backdrop-blur-xl z-50 flex items-center justify-center p-6"
+                  onClick={() => setExpandedProject(null)}
+                >
+                  <div
+                    className="glass-layer-strong max-w-4xl w-full p-8 md:p-12 max-h-[90vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex justify-between items-start mb-8">
+                      <div>
+                        <div className="mono text-xs text-[#666] mb-2">{expandedProject.type}</div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A] mb-3">{expandedProject.name}</h2>
+                        <div className="mono text-sm text-[#0A0A0A] opacity-60">{expandedProject.tech}</div>
+                      </div>
+                      <button
+                        onClick={() => setExpandedProject(null)}
+                        className="text-[#0A0A0A] text-2xl hover:opacity-60 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+
+                    <div className="space-y-6 text-[#0A0A0A] leading-relaxed mb-8">
+                      <p className="text-lg">{expandedProject.desc}</p>
+                      <p>{expandedProject.details}</p>
+                    </div>
+
+                    <a
+                      href={expandedProject.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 glass-layer px-6 py-3 text-[#0A0A0A] font-medium hover:bg-[#0A0A0A] hover:text-white transition-all"
+                    >
+                      <span>View Project</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        ReactDOM.render(<LiquidMonolithCV />, document.getElementById('root'));
+    </script>
+</body>
+</html>
