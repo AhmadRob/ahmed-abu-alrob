@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ahmadrob.github.io/ahmed-abu-alrob/sitemap.xml
