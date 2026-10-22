@@ -476,6 +476,27 @@ html[lang="ar"] .wheel .hub span { font-size: .82rem; margin-top: 2px; }
 @keyframes stB { 0% { opacity: 0; transform: scale(1.5); filter: blur(12px); } 22% { opacity: .92; transform: scale(1); filter: none; } 52% { opacity: .92; transform: none; } 100% { opacity: 0; transform: translate(7%, 5%) rotate(2deg); } }
 @keyframes stCut { 0%, 40% { transform: rotate(-12deg) scaleX(0); opacity: 1; } 58% { transform: rotate(-12deg) scaleX(1); opacity: 1; } 100% { transform: rotate(-12deg) scaleX(1); opacity: 0; } }
 
+/* changing language: a black blade sweeps across in the new reading direction */
+.langfx { position: fixed; inset: 0; z-index: 98; overflow: hidden; pointer-events: auto; --from: 115%; --to: -115%; }
+.langfx.ltr { --from: -115%; --to: 115%; }
+.langfx .lp { position: absolute; top: -10%; bottom: -10%; left: -20%; right: -20%; transform: translateX(var(--from)); }
+.langfx .lp.r { background: var(--red); clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+.langfx .lp.k { background: #0b0b0d; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+.langfx.in .lp.r { animation: lfIn .52s cubic-bezier(.75,0,.25,1) forwards; }
+.langfx.in .lp.k { animation: lfIn .52s cubic-bezier(.75,0,.25,1) .07s forwards; }
+.langfx.out .lp.k { animation: lfOut .62s cubic-bezier(.75,0,.25,1) forwards; }
+.langfx.out .lp.r { transform: none; animation: lfOut .62s cubic-bezier(.75,0,.25,1) .08s forwards; }
+@keyframes lfIn { from { transform: translateX(var(--from)); } to { transform: none; } }
+@keyframes lfOut { from { transform: none; } to { transform: translateX(var(--to)); } }
+.langfx .lc { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; color: #ecebe7; opacity: 0; }
+.langfx .lc b { font-family: var(--f-jp); font-weight: 900; font-size: min(30vmin, 260px); line-height: 1; color: #ff4e58; }
+.langfx .lc span { white-space: nowrap; font-family: var(--f-mono); font-size: .8rem; letter-spacing: .3em; text-transform: uppercase; }
+.langfx .lc span.ar { font-family: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', sans-serif; font-size: 1.15rem; letter-spacing: 0; font-weight: 600; }
+.langfx.in .lc { animation: lcIn .45s cubic-bezier(.2,.8,.2,1) .42s forwards; }
+.langfx.out .lc { opacity: 1; animation: lcOut .3s ease-in forwards; }
+@keyframes lcIn { from { opacity: 0; transform: scale(1.12); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes lcOut { from { opacity: 1; } to { opacity: 0; transform: scale(.94); filter: blur(4px); } }
+
 /* section titles are drawn by a blade */
 .js .sec h2[data-r] { opacity: 1; transform: none; clip-path: inset(-40% 100% -40% -40%); transition: clip-path 1.15s cubic-bezier(.77,0,.18,1); transition-delay: var(--dl, 0s); position: relative; }
 html[dir="rtl"].js .sec h2[data-r] { clip-path: inset(-40% -40% -40% 100%); }
@@ -840,6 +861,7 @@ html[dir="rtl"] .re-facts > div { grid-template-columns: 96px minmax(0, 1fr); }
 <div class="vig" aria-hidden="true"></div><div class="wipe" id="wipe" aria-hidden="true"><i></i></div><div class="grain" id="grain" aria-hidden="true"></div>
 <div class="cutfx" aria-hidden="true"><i id="cutfx"></i></div>
 <div class="stampfx" id="stampfx" aria-hidden="true" hidden><i></i><i></i></div>
+<div class="langfx" id="langfx" aria-hidden="true" hidden><i class="lp r"></i><i class="lp k"></i><div class="lc"><b>言</b><span id="langfxT"></span></div></div>
 <nav class="rail-b" id="rail" aria-label="Chapters"><i class="hit" aria-hidden="true"></i><i class="grip" aria-hidden="true"></i><i class="guard" aria-hidden="true"></i><i class="steel" aria-hidden="true"></i><i class="lit" id="lit" aria-hidden="true"></i><i class="collar" id="collar" aria-hidden="true"></i></nav>
 <button class="kamae" id="kamae" type="button" aria-label="Open the stance wheel to travel" aria-haspopup="dialog" aria-expanded="false">構</button>
 <span class="kamae-tip mono" id="ktip">Hold anywhere · or press 構</span>
@@ -1843,9 +1865,36 @@ window.SamuraiAudio = function (ac) {
     requestAnimationFrame(() => { measurePin(); measureStops(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measurePin(); measureStops(); });
   }
+  // switch, then put the reader back in the same chapter at the same depth
+  function switchLang(to) {
+    const a = Math.max(0, activeCh), off = scrollY - (chapterY[a] || 0);
+    applyLang(to, true);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      measurePin(); measureStops(); tween = null; smoothing = false;
+      window.scrollTo(0, clamp((chapterY[a] || 0) + off, 0, maxY()));
+    }));
+  }
+  // a blade sweeps across the screen; the change happens while it covers everything
+  let sweeping = false;
+  function sweep({ kanji, label, ar, leftward, mid, done }) {
+    const fx = $('langfx');
+    if (reduce || !fx) { mid(); done && done(); return; }
+    sweeping = true;
+    fx.querySelector('.lc b').textContent = kanji;
+    const t = $('langfxT'); t.textContent = label; t.className = ar ? 'ar' : '';
+    fx.className = 'langfx ' + (leftward ? 'rtl' : 'ltr'); fx.hidden = false; void fx.offsetWidth; fx.classList.add('in');
+    if (SA && soundOn) SA.swoosh(0, .24, .42);
+    setTimeout(mid, 600);
+    setTimeout(() => { fx.classList.remove('in'); fx.classList.add('out'); if (SA && soundOn) SA.swoosh(0, .2, .36); }, 860);
+    setTimeout(() => { fx.hidden = true; fx.className = 'langfx'; sweeping = false; done && done(); }, 1600);
+  }
   $('lang').addEventListener('click', () => {
-    if (SA && soundOn) SA.koto(LANG === 'en' ? 392 : 293.66, 0, .22);
-    applyLang(LANG === 'en' ? 'ar' : 'en', true);
+    if (sweeping || document.body.classList.contains('loading')) return;
+    const to = LANG === 'en' ? 'ar' : 'en';
+    if (SA && soundOn) SA.koto(to === 'ar' ? 392 : 293.66, 0, .22);
+    closeWheel();
+    sweep({ kanji: '言', label: to === 'ar' ? 'العربية' : 'English', ar: to === 'ar', leftward: to === 'ar',
+      mid: () => { switchLang(to); if (SA && soundOn) SA.koto(to === 'ar' ? 587.33 : 440, 0, .16); } });
   });
 
   // ───────── the duel ─────────
@@ -1867,14 +1916,19 @@ window.SamuraiAudio = function (ac) {
     }
   }
   function openDuel() {
-    if (dState !== 'off' || document.body.classList.contains('loading')) return;
-    closeWheel(); tween = null;
-    dState = 'intro'; duelEl.hidden = false; renderDuel(); setTimeout(() => dGo.focus(), 30);
-    if (SA && soundOn) SA.slow(true);
+    if (dState !== 'off' || sweeping || document.body.classList.contains('loading')) return;
+    closeWheel(); tween = null; smoothing = false;
+    dState = 'intro';
+    sweep({ kanji: '斬', label: LANG === 'ar' ? 'مبارزة' : 'A duel', ar: LANG === 'ar', leftward: LANG === 'ar',
+      mid: () => { duelEl.hidden = false; renderDuel(); if (SA && soundOn) { SA.slow(true); SA.taiko(0, true, .35); } },
+      done: () => { if (dState !== 'off') dGo.focus(); } });
   }
   function closeDuel() {
-    clearTimeout(dTimer); dState = 'off'; duelEl.hidden = true;
-    if (SA && soundOn) SA.slow(false);
+    if (dState === 'off' || sweeping) return;
+    clearTimeout(dTimer);
+    dState = 'leaving';
+    sweep({ kanji: '納', label: LANG === 'ar' ? 'أُغمد النصل' : 'Sheathed', ar: LANG === 'ar', leftward: LANG !== 'ar',
+      mid: () => { dState = 'off'; duelEl.hidden = true; if (SA && soundOn) SA.slow(false); } });
   }
   function round() {
     clearTimeout(dTimer); dState = 'wait'; renderDuel(); duelEl.focus && duelEl.focus();
