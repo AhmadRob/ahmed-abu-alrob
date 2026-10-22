@@ -331,6 +331,18 @@ html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, 
 /* wind: leaves and streaks drifting across everything */
 #wind { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 45; pointer-events: none; }
 .hero .meta, .hero .name, .hero-low, .hero .cue { position: relative; z-index: 1; }
+/* the portrait behind the hero: a faint ink presence by day, a red one under the Blood Moon */
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 100%); }
+.hero-bg .hb { position: absolute; inset: -4% 0 0; width: 100%; height: 104%; object-fit: cover; object-position: 50% 30%; transition: opacity 1.1s ease; will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse 70% 85% at 50% 40%, #000 35%, transparent 100%); mask-image: radial-gradient(ellipse 70% 85% at 50% 40%, #000 35%, transparent 100%); }
+.hero-bg .ink { opacity: .17; mix-blend-mode: multiply; filter: grayscale(.35) contrast(1.05); }
+.hero-bg .blood { opacity: 0; }
+.cinema .hero-bg .ink { opacity: 0; }
+.cinema .hero-bg .blood { opacity: .72; mix-blend-mode: multiply; }
+.js .hero-bg { opacity: 0; transition: opacity 1.6s ease .2s; }
+.ready .hero-bg { opacity: 1; }
+@media (max-width: 899px) { .hero-bg { bottom: auto; height: calc(56svh + env(safe-area-inset-top, 0px)); } .hero-bg .hb { object-position: 50% 40%; } .hero-bg .ink { opacity: .16; } }
 /* cinema mode: letterbox, grain, vignette */
 .cinebar { position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 48; pointer-events: none; transition: height .9s cubic-bezier(.7,0,.2,1); }
 .cinebar.t { top: 0; } .cinebar.b { bottom: 0; }
@@ -659,6 +671,7 @@ html[dir="rtl"] .re-facts > div { grid-template-columns: 96px minmax(0, 1fr); }
 
 <main id="top">
   <section class="hero wrap">
+    <div class="hero-bg" id="heroBg" aria-hidden="true"><img class="hb ink" src="img/hero-ink-1800.jpg" srcset="img/hero-ink-1000.jpg 1000w, img/hero-ink-1800.jpg 1800w, img/hero-ink-2560.jpg 2560w" sizes="100vw" width="2560" height="1429" alt="" decoding="async" fetchpriority="high"><img class="hb blood" src="img/hero-oni-1800.jpg" srcset="img/hero-oni-1000.jpg 1000w, img/hero-oni-1800.jpg 1800w, img/hero-oni-2560.jpg 2560w" sizes="100vw" width="2560" height="1429" alt="" decoding="async" loading="lazy"></div>
     <div class="meta mono" data-r><span data-l="hero.m1">PhD researcher · Software engineering</span><span data-l="hero.m2">KFUPM · Eastern Province</span><span>MMXXVI</span></div>
     <h1 class="name" aria-label="Ahmed Abu Alrob" id="hname">
       <span class="line"><span style="--dl:.05s" data-l="hero.n1">Ahmed</span></span>
@@ -1835,6 +1848,7 @@ window.SamuraiAudio = function (ac) {
   });
 
   // ───────── header behaviour ─────────
+  const heroBg = $('heroBg');
   const vigEl = document.querySelector('.vig'), h2s = [...document.querySelectorAll('.sec h2[data-r]')];
   const sensesEl = document.querySelector('.senses'); let dirAcc = 0;
 
@@ -2002,6 +2016,9 @@ window.SamuraiAudio = function (ac) {
     if (!reduce) { const sk = clamp(vel * -.035, -2.2, 2.2).toFixed(2); if (sk !== frame.sk) { frame.sk = sk; for (const h of h2s) h.style.setProperty('--skew', sk + 'deg'); } }
     // phones: the senses step aside while you read downward, and return when you scroll back
     if (!fine) { dirAcc = clamp(dirAcc + dy, -80, 80); const hide = dirAcc > 40 && y > 200; if (hide !== frame.hide) { frame.hide = hide; sensesEl.classList.toggle('away', hide); } if (dirAcc < -40) dirAcc = -40; }
+
+    // the hero portrait sinks slower than the page
+    if (!reduce && y < innerHeight * 1.2 && heroBg) { const hv = (y * .28).toFixed(1); if (hv !== frame.hb) { frame.hb = hv; heroBg.style.transform = `translate3d(0,${hv}px,0)`; } }
 
     // horizontal work
     if (trackMax > 0) {
