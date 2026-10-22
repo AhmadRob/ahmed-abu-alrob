@@ -835,6 +835,8 @@ html[dir="rtl"] .re-facts > div { grid-template-columns: 96px minmax(0, 1fr); }
         <ul class="links">
           <li><a href="https://linkedin.com/in/ahmedyasserabualrob" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
           <li><a href="https://github.com/AhmadRob" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+          <li><a data-cv="cv" href="cv/ahmed-abu-alrob-cv-en.pdf" target="_blank" rel="noopener" data-l="ft.cv">Academic CV ↓</a></li>
+          <li><a data-cv="resume" href="cv/ahmed-abu-alrob-resume-en.pdf" target="_blank" rel="noopener" data-l="ft.res">Résumé ↓</a></li>
           <li><span dir="ltr">+962 777 242 105</span></li>
         </ul>
       </div>
@@ -1238,6 +1240,7 @@ window.SamuraiAudio = function (ac) {
     'hk.l': '(هايكو)', 'hk.1': 'الريحُ تمشّطُ العشبَ الطويل؛', 'hk.2': 'يُستلُّ نصلٌ بلا صوت.', 'hk.3': 'فتخضرّ الاختبارات كلّها.', 'hk.c': 'كُتبت عند الغسق · الظهران',
     'ft.pre': 'النصل مسلول، والدور عليك.',
     'ft.big': 'لنتحدّث<span class="dot">.</span>', 'ft.big2': 'لنتحدّث<span class="dot">.</span>',
+    'ft.cv': 'السيرة الذاتية الأكاديمية ↓', 'ft.res': 'السيرة الذاتية المهنية ↓',
     'ft.email': 'البريد', 'ft.else': 'تجدني أيضًا على', 'ft.now': 'الآن', 'ft.place': 'الظهران',
     'ft.n1': 'أبحاث الدكتوراه في KFUPM', 'ft.n2': 'التحول الرقمي في BZ International', 'ft.n3': 'منفتح على التعاون البحثي',
     'ft.c': '© 2026 أَحْمَد يَاسِر أَبُوالرُّب', 'ft.duel': '斬 — في هذه الصفحة مبارزة مخفية. اكتب «katana» أو اضغط هنا', 'ft.top': 'العودة إلى الأعلى ↑'
@@ -1853,6 +1856,7 @@ window.SamuraiAudio = function (ac) {
     track.querySelectorAll('.card').forEach((card, i) => { card.querySelector('h3').textContent = PD[i].t; card.querySelector('.cat').textContent = PD[i].c; card.querySelector('.desc').textContent = PD[i].d; });
     opts.forEach((o, i) => { o.querySelector('span').textContent = U.ch[CHAP[i].id]; });
     placeOpts(); choose(sel, true);
+    document.querySelectorAll('[data-cv]').forEach(a => { a.href = `cv/ahmed-abu-alrob-${a.dataset.cv}-${LANG}.pdf`; });
     $('ktip').textContent = U.ktip; $('copytag').textContent = U.copy; curR.textContent = U.open;
     $('soundl').textContent = soundOn ? U.sndOn : U.sndOff; $('cineTip').textContent = U.cine; $('cine').setAttribute('aria-label', U.cine);
     $('langK').textContent = LANG === 'ar' ? 'En' : 'ع'; $('langTip').textContent = U.lang; $('lang').setAttribute('aria-label', U.langAria);
