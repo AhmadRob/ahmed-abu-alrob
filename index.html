@@ -542,6 +542,83 @@ html[dir="rtl"].js .sec h2[data-r].in::after { animation-name: h2bladeR; }
 .re-facts > div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
 .re-facts dt { color: var(--mid); padding-top: 3px; }
 .re-facts dd { margin: 0; font-size: .95rem; }
+
+/* ── Notes: an editorial index, in the same language as Research ── */
+.notes { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.note { border-bottom: 1px solid var(--hair); }
+.js .note { opacity: 0; transform: translateY(24px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--j) * .12s); }
+.js .note.in { opacity: 1; transform: none; }
+.note > a { position: relative; display: grid; grid-template-columns: 56px minmax(150px, .8fr) minmax(0, 2.2fr) minmax(110px, auto) 92px; gap: 24px; align-items: start; padding: clamp(28px, 4vh, 42px) 0; color: inherit; text-decoration: none; }
+.note > a::before { content: ""; position: absolute; inset: 0 calc(var(--gut) * -.5); background: var(--red-soft); transform: scaleY(0); transform-origin: bottom; transition: transform .5s cubic-bezier(.7,0,.2,1); z-index: -1; }
+.note > a:hover::before, .note > a:focus-visible::before { transform: scaleY(1); transform-origin: top; }
+.note > a:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+.note .nn { color: var(--red); padding-top: 10px; }
+.note .nc { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-weight: 800; font-stretch: 125%; font-size: clamp(1.5rem, 2.6vw, 2.4rem); line-height: 1; letter-spacing: -.03em; white-space: nowrap; }
+.note .nc em { font-style: normal; font-weight: 500; font-stretch: normal; font-size: .6rem; padding: 4px 8px; border-radius: 999px; color: #fff; background: var(--red); letter-spacing: .12em; }
+.note .nb { display: grid; gap: 10px; min-width: 0; max-width: 680px; }
+.note .nt { font-weight: 700; font-stretch: 108%; font-size: clamp(1.2rem, 1.9vw, 1.7rem); line-height: 1.15; letter-spacing: -.02em; transition: color .3s; }
+.note .nt small { color: var(--mid); margin-inline-start: 8px; font-size: .62rem; vertical-align: middle; }
+.note .nd { color: var(--soft); max-width: 60ch; }
+.note .ng { color: var(--mid); font-size: .62rem; }
+html[dir="rtl"] .note .ng { text-align: right; }
+.note .nimg { display: none; }
+.note .nm { display: grid; gap: 6px; color: var(--mid); padding-top: 8px; text-align: end; white-space: nowrap; }
+.note .nk { position: relative; justify-self: end; font-family: var(--f-jp); font-weight: 900; font-size: clamp(3rem, 5.4vw, 4.8rem); line-height: .9; color: var(--red); opacity: .9; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.note .nk b { position: absolute; top: -6px; inset-inline-end: -14px; font: 400 1rem/1 var(--f-display); color: var(--ink); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.note > a:hover .nt { color: var(--red); }
+.note > a:hover .nk { transform: translateY(-4px) rotate(-4deg); }
+.note > a:hover .nk b { transform: translate(3px, -3px); color: var(--red); }
+html[dir="rtl"] .note > a:hover .nk b { transform: translate(-3px, -3px); }
+html[dir="rtl"] .note > a:hover .nk { transform: translateY(-4px) rotate(4deg); }
+/* the floating preview */
+.npv { position: fixed; left: 0; top: 0; z-index: 46; width: 330px; aspect-ratio: 16 / 10; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; }
+.npv.on { opacity: 1; }
+.npv-in { position: absolute; inset: 0; background: #fafafa center top / cover no-repeat; border-radius: 4px; box-shadow: 0 0 0 1px var(--hair), 0 24px 50px -18px rgba(0,0,0,.45); clip-path: inset(0 0 100% 0); transition: clip-path .5s cubic-bezier(.7,0,.2,1); }
+.npv.on .npv-in { clip-path: inset(0 0 0 0); }
+.npv.swap .npv-in { animation: npvIn .45s cubic-bezier(.7,0,.2,1); }
+@keyframes npvIn { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+:root.cinema .npv-in { box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 24px 50px -18px rgba(0,0,0,.8); }
+html[lang="ar"] .note .nt { font-family: var(--f-ar-d); font-stretch: normal; letter-spacing: 0; line-height: 1.4; }
+html[lang="ar"] .note .nd { line-height: 1.85; }
+@media (max-width: 899px) {
+  .note > a { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px 16px; }
+  .note .nc { grid-column: 2; font-size: 1.6rem; }
+  .note .nk { grid-column: 3; grid-row: 1 / span 2; font-size: 2.8rem; }
+  .note .nb { grid-column: 2 / -1; }
+  .note .nm { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 4px 14px; text-align: start; padding-top: 0; }
+  .note .nimg { display: block; width: 100%; height: auto; margin-top: 6px; border-radius: 4px; box-shadow: 0 0 0 1px var(--hair); }
+  .npv { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .js .note { opacity: 1; transform: none; transition: none; } .npv-in { transition: none; } }
+/* compact: a small shelf, not a full chapter */
+#notes { padding-top: clamp(80px, 12vh, 140px); }
+#notes .shead { margin-bottom: 18px; align-items: end; }
+#notes .shead h2 { font-size: clamp(2rem, 4.4vw, 3.8rem); }
+#notes .shead p { font-size: .92rem; }
+.note > a { grid-template-columns: 34px minmax(110px, 140px) minmax(0, 1fr) auto 56px; gap: 22px; align-items: center; padding: 18px 0; }
+.note .nn { padding-top: 0; }
+.note .nc { font-size: clamp(1.05rem, 1.45vw, 1.3rem); letter-spacing: -.02em; flex-direction: column; align-items: flex-start; gap: 6px; }
+.note .nb { gap: 4px; max-width: none; }
+.note .nt { font-size: clamp(1rem, 1.25vw, 1.15rem); }
+.note .nd { font-size: .86rem; color: var(--mid); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.note .ng { display: none; }
+.note .nm { display: flex; gap: 6px 14px; padding-top: 0; font-size: .6rem; }
+.note .nm span:first-child { display: none; }
+.note .nk { font-size: 2.1rem; }
+.note .nk b { top: -4px; inset-inline-end: -12px; font-size: .8rem; }
+.npv { width: 280px; }
+@media (max-width: 1100px) { .note .nm { display: none; } .note > a { grid-template-columns: 34px minmax(100px, 130px) minmax(0, 1fr) 48px; } }
+@media (max-width: 899px) {
+  .note > a { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; padding: 16px 0; }
+  .note .nn { display: none; }
+  .note .nc { grid-column: 1; flex-direction: row; align-items: baseline; font-size: 1.15rem; }
+  .note .nk { grid-column: 2; grid-row: 1 / span 2; font-size: 1.9rem; align-self: center; }
+  .note .nb { grid-column: 1; }
+  .note .nd { -webkit-line-clamp: 2; }
+  .note .nimg { display: none; }
+}
+
+
 .papers { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .paper { position: relative; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 24px; padding: clamp(28px, 4vh, 44px) 0; border-bottom: 1px solid var(--hair); }
 .paper .pn { color: var(--red); padding-top: 8px; }
@@ -769,6 +846,12 @@ html[dir="rtl"] .re-facts > div { grid-template-columns: 96px minmax(0, 1fr); }
         <span class="pk" aria-hidden="true">評</span>
       </li>
     </ol>
+  </section>
+
+  <section class="sec wrap" id="notes" aria-labelledby="hno">
+    <div class="shead" style="padding:0"><h2 id="hno" data-r><span data-l="no.h">Teachings</span><sup id="noCount"></sup></h2><p data-r style="--dl:.1s" data-l="no.p">What I learn, I write down and pass on. Open to any student who walks the same path.</p></div>
+    <ol class="notes" id="notesList"></ol>
+    <div class="npv" id="npv" aria-hidden="true"><div class="npv-in"></div></div>
   </section>
 
   <section class="sec wrap" id="exp" aria-labelledby="he">
@@ -1245,6 +1328,7 @@ window.SamuraiAudio = function (ac) {
     'st.4': 'في مسابقة IEEE لأفضل ورقة بحثية، الأردن',
     're.h': 'البحث',
     're.p': 'واجهات تفهم ما تشعر به، وتتغيّر لتساعدك.',
+    'no.h': 'التعاليم', 'no.p': 'ما أتعلّمه أدوّنه وأورّثه، مفتوحًا لكل طالب يسلك الطريق نفسه.',
     're.q': 'تعامل معظم البرمجيات كل إنسان بالطريقة نفسها، في كل مزاج وفي كل لحظة. ويسأل بحثي: ماذا يتغيّر حين تستطيع الواجهة أن تستشعر <em>المشاعر والسلوك والسياق</em>، وأن تتكيّف على الجهاز نفسه، دون أن ترسل مشاعر أحد إلى السحابة؟',
     're.f1k': 'الآن', 're.f1v': 'دكتوراه في علوم الحاسب · KFUPM',
     're.f2k': 'المجال', 're.f2v': 'هندسة البرمجيات · الأنظمة الذكية التكيّفية',
@@ -1297,7 +1381,7 @@ window.SamuraiAudio = function (ac) {
       open: 'Open ↗', ktip: 'Hold anywhere · or press 構', hub: 'Choose a stance', release: 'Release to travel', click: 'Click to travel', travelTo: 'Travel to ',
       story: 'I’m Ahmed, a PhD researcher and software engineer who treats an interface like a [blade]: folded, tested, and sharpened until nothing extra is left. I study [adaptive interfaces] that respond to emotion, behavior and context, and I build AI and automation that do real work. Trained at JUST, now researching at KFUPM, and [still training.]',
       mq: ['Flutter', 'AI agents', 'Interfaces that adapt', 'Clean code'],
-      ch: { top: 'Name', work: 'Work', about: 'About', research: 'Research', exp: 'Experience', arsenal: 'Arsenal', record: 'Record', contact: 'Contact' },
+      ch: { top: 'Name', work: 'Work', about: 'About', research: 'Research', notes: 'Teachings', exp: 'Experience', arsenal: 'Arsenal', record: 'Record', contact: 'Contact' },
       d: { title: 'A duel.', intro: 'Wait for 斬. Then strike: click, tap, or press any key.', begin: 'Begin', leave: 'Leave', again: 'Again', wait: 'Steady…', early: 'Too soon.', earlySub: 'A samurai waits for the moment.', best: 'Best', ms: 'ms',
         ranks: [[220, '剣聖', 'Kensei · Sword saint'], [280, '侍', 'Samurai'], [360, '浪人', 'Rōnin'], [500, '弟子', 'Deshi · Apprentice'], [1e9, '案山子', 'Kakashi · Scarecrow']] }
     },
@@ -1307,7 +1391,7 @@ window.SamuraiAudio = function (ac) {
       open: 'افتح ↖', ktip: 'اضغط مطوّلًا في أي مكان · أو اضغط 構', hub: 'اختر وجهتك', release: 'أفلت للانتقال', click: 'انقر للانتقال', travelTo: 'انتقل إلى ',
       story: 'أنا أحمد، باحث دكتوراه ومهندس برمجيات، أصنع الواجهة كما يُصنع [النصل]: طيٌّ واختبارٌ وشحذ، حتى لا يبقى فيها زائد. أدرس [الواجهات التكيّفية] التي تستجيب للمشاعر والسلوك والسياق، وأبني أنظمة ذكاء اصطناعي وأتمتة تؤدي عملًا حقيقيًا. درست في جامعة العلوم والتكنولوجيا الأردنية، وأبحث الآن في KFUPM، و[ما زلت أتدرّب.]',
       mq: ['Flutter', 'وكلاء ذكاء اصطناعي', 'واجهات تتكيّف', 'الكود النظيف'],
-      ch: { top: 'البداية', work: 'الأعمال', about: 'نبذة', research: 'البحث', exp: 'الخبرة', arsenal: 'العُدّة', record: 'السجلّ', contact: 'تواصل' },
+      ch: { top: 'البداية', work: 'الأعمال', about: 'نبذة', research: 'البحث', notes: 'التعاليم', exp: 'الخبرة', arsenal: 'العُدّة', record: 'السجلّ', contact: 'تواصل' },
       d: { title: 'مبارزة.', intro: 'انتظر 斬. ثم اضرب: انقر، أو المس الشاشة، أو اضغط أي مفتاح.', begin: 'ابدأ', leave: 'خروج', again: 'مرة أخرى', wait: 'اثبت…', early: 'تعجّلت.', earlySub: 'الساموراي يتحيّن اللحظة.', best: 'الأفضل', ms: 'ms',
         ranks: [[220, '剣聖', 'كينسي · سيّد السيف'], [280, '侍', 'ساموراي'], [360, '浪人', 'رونين'], [500, '弟子', 'ديشي · تلميذ'], [1e9, '案山子', 'كاكاشي · فزّاعة']] }
     }
@@ -1485,6 +1569,61 @@ window.SamuraiAudio = function (ac) {
   splitStory(story.textContent);
 
   // ───────── reveal on view ─────────
+
+  // ───────── Notes: an editorial index of study notes, with a live preview that follows the cursor ─────────
+  // To add a note, add one entry here (newest first). The newest one is marked "New".
+  const NOTES = [
+    { code: 'SWE 539', k: '測', url: 'https://ahmadrob.github.io/SWE-539-Exam-Kit/', img: 'img/notes-swe539.jpg', date: '2026-10-28',
+      en: { t: 'Software Metrics', s: 'The exam kit', d: 'Every formula on one wall, 44 flashcards to drill, a cohesion calculator for any class, and 35 trials with worked answers. Read it the night before the duel.', who: 'Sensei · Dr. Mohammad Alshayeb' },
+      ar: { t: 'مقاييس البرمجيات', s: 'عُدّة الامتحان', d: 'كل المعادلات على جدار واحد، و44 بطاقة للتدريب، وحاسبة للتماسك لأي صنف، و35 نزالًا بحلول مفصّلة. اقرأها ليلة المبارزة.', who: 'السينسي · د. محمد الشايب' },
+      tags: ['C&K', 'Li', 'Cohesion', 'Package metrics', 'Refactoring', 'GQM'] },
+    { code: 'ICS 553', k: '算', url: 'https://ahmadrob.github.io/ics553-algorithms/', img: 'img/notes-ics553.jpg', date: '2026-10-19',
+      en: { t: 'Algorithms', s: 'Kata, move by move', d: 'Every search and sort in the course, played out step by step like a kata with its pseudocode beside it, then P vs NP, nine reductions and a proof template.', who: 'Sensei · Dr. Sultan Almuhammadi' },
+      ar: { t: 'الخوارزميات', s: 'كاتا، حركةً حركة', d: 'كل خوارزميات البحث والترتيب في المقرّر تُؤدّى خطوة بخطوة ككاتا وبجانبها الكود الوهمي، ثم P مقابل NP وتسعة اختزالات وقالب للبراهين.', who: 'السينسي · د. سلطان المحمدي' },
+      tags: ['Sorting', 'Searching', 'Θ / O / Ω', 'P vs NP', 'Reductions', 'Proofs'] }
+  ];
+  const notesList = $('notesList'), npv = $('npv');
+  function renderNotes() {
+    if (!notesList) return;
+    const ar = LANG === 'ar', newest = NOTES.reduce((m, x) => x.date > m ? x.date : m, '');
+    const month = d => { const [y, m] = d.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString(ar ? 'ar' : 'en-GB', { month: 'short', year: 'numeric' }); };
+    const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const seen = notesList.dataset.seen ? ' in' : '';
+    notesList.innerHTML = NOTES.map((n, i) => { const L = ar ? n.ar : n.en; return `
+      <li class="note${seen}" style="--j:${i}">
+        <a href="${n.url}" target="_blank" rel="noopener" data-img="${n.img}" data-cur="${ar ? 'ادرس' : 'Study'}" data-cur-ar="ادرس">
+          <span class="nn mono">${String(i + 1).padStart(2, '0')}</span>
+          <span class="nc" dir="ltr">${n.code}${n.date === newest ? `<em class="mono">${ar ? 'حبر جديد' : 'Fresh ink'}</em>` : ''}</span>
+          <span class="nb">
+            <span class="nt">${esc(L.t)} <small class="mono">${esc(L.s)}</small></span>
+            <span class="nd">${esc(L.d)}</span>
+            <span class="ng mono" dir="ltr">${n.tags.map(esc).join(' · ')}</span>
+            <img class="nimg" src="${n.img}" alt="" loading="lazy" decoding="async" width="960" height="600">
+          </span>
+          <span class="nm mono"><span>${month(n.date)}</span><span>${ar ? 'جامعة الملك فهد' : 'KFUPM'}</span><span>${esc(L.who)}</span></span>
+          <span class="nk" aria-hidden="true">${n.k}<b>${ar ? '↖' : '↗'}</b></span>
+        </a>
+      </li>`; }).join('');
+    $('noCount').textContent = String(NOTES.length).padStart(2, '0');
+  }
+  renderNotes();
+  if (notesList) {
+    // rows rise in one after another the first time the list is reached
+    const show = () => { notesList.dataset.seen = 1; notesList.querySelectorAll('.note').forEach(el => el.classList.add('in')); };
+    if ('IntersectionObserver' in window && !reduce) new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { show(); o.disconnect(); } }), { threshold: .15 }).observe(notesList);
+    else show();
+    // the preview: one floating frame that follows the cursor and swaps to the hovered note
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (fine && npv) {
+      const inner = npv.firstElementChild; let tx = 0, ty = 0, x = 0, y = 0, on = false, raf = 0, cur = '';
+      const tick = () => { x += (tx - x) * .14; y += (ty - y) * .14; npv.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${((tx - x) * .02).toFixed(2)}deg)`; raf = on || Math.abs(tx - x) > .5 ? requestAnimationFrame(tick) : 0; };
+      notesList.addEventListener('pointermove', e => { tx = e.clientX + 28; ty = e.clientY - 120; if (tx + 330 > innerWidth) tx = e.clientX - 358; if (!raf) raf = requestAnimationFrame(tick); });
+      notesList.addEventListener('pointerover', e => { const a = e.target.closest('.note a'); if (!a) return;
+        if (!on) { x = tx = e.clientX + 28; y = ty = e.clientY - 120; }
+        on = true; npv.classList.add('on'); if (a.dataset.img !== cur) { cur = a.dataset.img; inner.style.backgroundImage = `url(${cur})`; npv.classList.remove('swap'); void npv.offsetWidth; npv.classList.add('swap'); } });
+      notesList.addEventListener('pointerleave', () => { on = false; npv.classList.remove('on'); });
+    }
+  }
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in'); io.unobserve(e.target);
@@ -1668,7 +1807,7 @@ window.SamuraiAudio = function (ac) {
 
   // ───────── chapters, smooth momentum and chapter strikes ─────────
   const CHAP = [
-    { id: 'top', k: '名', n: 'Name' }, { id: 'work', k: '作', n: 'Work' }, { id: 'about', k: '人', n: 'About' }, { id: 'research', k: '研', n: 'Research' },
+    { id: 'top', k: '名', n: 'Name' }, { id: 'work', k: '作', n: 'Work' }, { id: 'about', k: '人', n: 'About' }, { id: 'research', k: '研', n: 'Research' }, { id: 'notes', k: '伝', n: 'Teachings' },
     { id: 'exp', k: '戦', n: 'Experience' }, { id: 'arsenal', k: '技', n: 'Arsenal' }, { id: 'record', k: '誉', n: 'Record' }, { id: 'contact', k: '縁', n: 'Contact' }
   ];
   let chapterY = [], tween = null;
@@ -1930,7 +2069,7 @@ window.SamuraiAudio = function (ac) {
     $('ktip').textContent = U.ktip; $('copytag').textContent = U.copy; curR.textContent = U.open;
     $('soundl').textContent = soundOn ? U.sndOn : U.sndOff; $('cineTip').textContent = U.cine; $('cine').setAttribute('aria-label', U.cine);
     $('langK').textContent = LANG === 'ar' ? 'En' : 'ع'; $('langTip').textContent = U.lang; $('lang').setAttribute('aria-label', U.langAria);
-    clock();
+    clock(); renderNotes();
     if (duelEl && !duelEl.hidden) renderDuel();
     if (save) {
       try { localStorage.setItem('aya-lang', LANG); } catch (_) {}
