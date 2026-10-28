@@ -549,7 +549,7 @@ html[dir="rtl"].js .sec h2[data-r].in::after { animation-name: h2bladeR; }
 .js .note { opacity: 0; transform: translateY(24px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--j) * .12s); }
 .js .note.in { opacity: 1; transform: none; }
 .note > a { position: relative; display: grid; grid-template-columns: 56px minmax(150px, .8fr) minmax(0, 2.2fr) minmax(110px, auto) 92px; gap: 24px; align-items: start; padding: clamp(28px, 4vh, 42px) 0; color: inherit; text-decoration: none; }
-.note > a::before { content: ""; position: absolute; inset: 0 calc(var(--gut) * -.5); background: var(--red-soft); transform: scaleY(0); transform-origin: bottom; transition: transform .5s cubic-bezier(.7,0,.2,1); z-index: -1; }
+.note > a::before { content: ""; position: absolute; inset: 0 -14px; background: var(--red-soft); transform: scaleY(0); transform-origin: bottom; transition: transform .5s cubic-bezier(.7,0,.2,1); z-index: -1; }
 .note > a:hover::before, .note > a:focus-visible::before { transform: scaleY(1); transform-origin: top; }
 .note > a:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
 .note .nn { color: var(--red); padding-top: 10px; }
@@ -590,6 +590,16 @@ html[lang="ar"] .note .nd { line-height: 1.85; }
   .npv { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .js .note { opacity: 1; transform: none; transition: none; } .npv-in { transition: none; } }
+
+/* a slice of the page itself, revealed inside the row on hover */
+.note > a { position: relative; }
+.note .nshot { position: absolute; top: 8px; bottom: 8px; inset-inline-end: 84px; width: min(36%, 460px); border-radius: 3px; background: #fafafa center 18% / cover no-repeat; box-shadow: 0 0 0 1px var(--hair), 0 10px 24px -14px rgba(0,0,0,.45); clip-path: inset(0 100% 0 0); transition: clip-path .55s cubic-bezier(.7,0,.2,1); pointer-events: none; z-index: 1; }
+html[dir="rtl"] .note .nshot { clip-path: inset(0 0 0 100%); }
+.note > a:hover .nshot, .note > a:focus-visible .nshot { clip-path: inset(0 0 0 0); }
+.note .nm { transition: opacity .3s; }
+.note > a:hover .nm, .note > a:focus-visible .nm { opacity: 0; }
+:root.cinema .note .nshot { box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 10px 24px -14px rgba(0,0,0,.8); }
+@media (hover: none), (max-width: 899px) { .note .nshot { display: none; } }
 /* compact: a small shelf, not a full chapter */
 #notes { padding-top: clamp(80px, 12vh, 140px); }
 #notes .shead { margin-bottom: 18px; align-items: end; }
@@ -1601,6 +1611,7 @@ window.SamuraiAudio = function (ac) {
             <img class="nimg" src="${n.img}" alt="" loading="lazy" decoding="async" width="960" height="600">
           </span>
           <span class="nm mono"><span>${month(n.date)}</span><span>${ar ? 'جامعة الملك فهد' : 'KFUPM'}</span><span>${esc(L.who)}</span></span>
+          <span class="nshot" aria-hidden="true" style="background-image:url(${n.img})"></span>
           <span class="nk" aria-hidden="true">${n.k}<b>${ar ? '↖' : '↗'}</b></span>
         </a>
       </li>`; }).join('');
@@ -1614,7 +1625,7 @@ window.SamuraiAudio = function (ac) {
     else show();
     // the preview: one floating frame that follows the cursor and swaps to the hovered note
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    if (fine && npv) {
+    if (false && fine && npv) {
       const inner = npv.firstElementChild; let tx = 0, ty = 0, x = 0, y = 0, on = false, raf = 0, cur = '';
       const tick = () => { x += (tx - x) * .14; y += (ty - y) * .14; npv.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${((tx - x) * .02).toFixed(2)}deg)`; raf = on || Math.abs(tx - x) > .5 ? requestAnimationFrame(tick) : 0; };
       notesList.addEventListener('pointermove', e => { tx = e.clientX + 28; ty = e.clientY - 120; if (tx + 330 > innerWidth) tx = e.clientX - 358; if (!raf) raf = requestAnimationFrame(tick); });
@@ -1893,6 +1904,18 @@ window.SamuraiAudio = function (ac) {
   // ───────── the blade rail ─────────
   const rail = $('rail'), collar = $('collar'), lit = $('lit');
   let marks = [], railH = 0;
+  // chapters sit at even steps along the blade; scrolling between two chapters moves the marker between their steps
+  const railPts = () => { const M = maxY() || 1, n = chapterY.length, pts = []; let last = -1;
+    chapterY.forEach((cy, i) => { const y = Math.max(last + 1, Math.min(M, cy)); pts.push([y, n > 1 ? i / (n - 1) : 0]); last = y; });
+    if (pts.length && pts[pts.length - 1][0] < M) pts[pts.length - 1] = [pts[pts.length - 1][0], pts[pts.length - 1][1]];
+    return pts; };
+  function railK(y) { const P = railPts(), M = maxY() || 1; if (!P.length) return clamp(y / M, 0, 1);
+    if (y <= P[0][0]) return P[0][0] > 0 ? P[0][1] * (y / P[0][0]) : P[0][1];
+    for (let i = 0; i < P.length - 1; i++) if (y <= P[i + 1][0]) return P[i][1] + (y - P[i][0]) / (P[i + 1][0] - P[i][0]) * (P[i + 1][1] - P[i][1]);
+    const L = P[P.length - 1]; return L[0] >= M ? 1 : L[1] + (y - L[0]) / (M - L[0]) * (1 - L[1]); }
+  function railY(k) { const P = railPts(), M = maxY() || 1; if (!P.length) return k * M;
+    for (let i = 0; i < P.length - 1; i++) if (k <= P[i + 1][1]) return P[i][0] + (k - P[i][1]) / ((P[i + 1][1] - P[i][1]) || 1) * (P[i + 1][0] - P[i][0]);
+    return P[P.length - 1][0]; }
   function drawRail() {
     const M = maxY() || 1;
     if (!marks.length) CHAP.forEach((c, i) => {
@@ -1903,7 +1926,7 @@ window.SamuraiAudio = function (ac) {
     });
     marks.forEach((m, i) => {
       const c = CHAP[i]; m.setAttribute('aria-label', UI[LANG].travelTo + UI[LANG].ch[c.id]); m.querySelector('span').textContent = UI[LANG].ch[c.id];
-      m.style.top = `calc(14px + (100% - 14px) * ${clamp(chapterY[i] / M, 0, 1)})`;
+      m.style.top = `calc(14px + (100% - 14px) * ${(CHAP.length > 1 ? i / (CHAP.length - 1) : 0).toFixed(4)})`;
     });
     railH = rail.clientHeight - 14;
   }
@@ -1912,15 +1935,15 @@ window.SamuraiAudio = function (ac) {
   collar.addEventListener('pointermove', e => {
     if (!railDrag) return;
     const r = rail.getBoundingClientRect(), k = clamp((e.clientY - r.top - 14) / (r.height - 14), 0, 1);
-    window.scrollTo(0, k * maxY());
+    window.scrollTo(0, railY(k));
   });
   const endRail = () => { if (!railDrag) return; railDrag = null; rail.classList.remove('drag'); };
   collar.addEventListener('pointerup', endRail); collar.addEventListener('pointercancel', endRail);
   let activeCh = -1;
   function updateRail(y) {
-    const k = clamp(y / (maxY() || 1), 0, 1);
+    const k = clamp(railK(y), 0, 1);
     collar.style.translate = `0 ${(railH * k).toFixed(1)}px`; lit.style.scale = `1 ${k.toFixed(4)}`;
-    let a = 0; chapterY.forEach((cy, i) => { if (y >= cy - innerHeight * .4) a = i; });
+    let a = 0; chapterY.forEach((cy, i) => { if (y >= cy - innerHeight * .28) a = i; });
     if (a !== activeCh) { if (activeCh >= 0 && !tween && !railDrag) slash(a > activeCh ? 1 : -1, false, true); activeCh = a; marks.forEach((m, i) => m.classList.toggle('on', i === a)); }
   }
 
