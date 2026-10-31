@@ -401,11 +401,10 @@ html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, 
 .rail-b .mk b { font-family: var(--f-jp); font-weight: 900; font-size: .82rem; color: var(--mid); line-height: 1; opacity: 0; transition: color .3s, opacity .3s, transform .35s cubic-bezier(.2,.8,.2,1); }
 .rail-b .mk.on b, .rail-b:hover .mk b { opacity: 1; }
 .rail-b .mk span { font-family: var(--f-mono); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); opacity: 0; transform: translateX(6px); transition: opacity .3s, transform .35s; white-space: nowrap; order: -1; }
-.rail-b .mk i { flex: none; width: 8px; height: 1px; background: var(--mid); transition: width .3s, background .3s; }
+.rail-b .mk i { flex: none; width: 10px; height: 1px; visibility: hidden; }
 .rail-b:hover .mk span { opacity: .55; transform: none; }
 .rail-b:hover .mk:hover span, .rail-b:hover .mk.on span { opacity: 1; }
 .rail-b .mk:hover b, .rail-b .mk.on b { color: var(--red); transform: translateX(-3px); }
-.rail-b .mk.on i { width: 12px; background: var(--red); }
 @media (max-width: 899px) { .rail-b { display: none; } }
 html[dir="rtl"] .rail-b { right: auto; left: calc(var(--gut) / 2 - 1px); }
 html[dir="rtl"] .rail-b .hit { right: auto; left: -16px; }
@@ -597,7 +596,6 @@ html[lang="ar"] .note .nd { line-height: 1.85; }
 html[dir="rtl"] .note .nshot { clip-path: inset(0 0 0 100%); }
 .note > a:hover .nshot, .note > a:focus-visible .nshot { clip-path: inset(0 0 0 0); }
 .note .nm { transition: opacity .3s; }
-.note > a:hover .nm, .note > a:focus-visible .nm { opacity: 0; }
 :root.cinema .note .nshot { box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 10px 24px -14px rgba(0,0,0,.8); }
 @media (hover: none), (max-width: 899px) { .note .nshot { display: none; } }
 /* compact: a small shelf, not a full chapter */
@@ -1583,6 +1581,10 @@ window.SamuraiAudio = function (ac) {
   // ───────── Notes: an editorial index of study notes, with a live preview that follows the cursor ─────────
   // To add a note, add one entry here (newest first). The newest one is marked "New".
   const NOTES = [
+    { code: 'ICS 500', k: '験', url: 'https://ahmadrob.github.io/ICS-500-Study-Notes/', img: 'img/notes-ics500.jpg', date: '2026-10-31',
+      en: { t: 'Research Methods', s: 'The logic behind the numbers', d: 'Five modules, from the literature review to ANOVA: why each equation holds and how to read a table of results, with 21 charts, 41 flashcards, a CI and t-test calculator, and 13 trials with full answers.', who: 'Sensei · Dr. Moataz Ahmed' },
+      ar: { t: 'مناهج البحث وتصميم التجارب', s: 'المنطق خلف الأرقام', d: 'خمس وحدات من مراجعة الأدبيات حتى ANOVA: لماذا تصحّ كل معادلة وكيف تُقرأ جداول النتائج، مع 21 رسمًا، و41 بطاقة، وحاسبة لفترات الثقة واختبار t، و13 نزالًا بحلول كاملة.', who: 'السينسي · د. معتز أحمد' },
+      tags: ['Confidence intervals', 't-tests', 'ANOVA', 'SLR', 'PRISMA', 'Validity'] },
     { code: 'SWE 539', k: '測', url: 'https://ahmadrob.github.io/SWE-539-Exam-Kit/', img: 'img/notes-swe539.jpg', date: '2026-10-28',
       en: { t: 'Software Metrics', s: 'The exam kit', d: 'Every formula on one wall, 44 flashcards to drill, a cohesion calculator for any class, and 35 trials with worked answers. Read it the night before the duel.', who: 'Sensei · Dr. Mohammad Alshayeb' },
       ar: { t: 'مقاييس البرمجيات', s: 'عُدّة الامتحان', d: 'كل المعادلات على جدار واحد، و44 بطاقة للتدريب، وحاسبة للتماسك لأي صنف، و35 نزالًا بحلول مفصّلة. اقرأها ليلة المبارزة.', who: 'السينسي · د. محمد الشايب' },
@@ -1608,10 +1610,8 @@ window.SamuraiAudio = function (ac) {
             <span class="nt">${esc(L.t)} <small class="mono">${esc(L.s)}</small></span>
             <span class="nd">${esc(L.d)}</span>
             <span class="ng mono" dir="ltr">${n.tags.map(esc).join(' · ')}</span>
-            <img class="nimg" src="${n.img}" alt="" loading="lazy" decoding="async" width="960" height="600">
           </span>
           <span class="nm mono"><span>${month(n.date)}</span><span>${ar ? 'جامعة الملك فهد' : 'KFUPM'}</span><span>${esc(L.who)}</span></span>
-          <span class="nshot" aria-hidden="true" style="background-image:url(${n.img})"></span>
           <span class="nk" aria-hidden="true">${n.k}<b>${ar ? '↖' : '↗'}</b></span>
         </a>
       </li>`; }).join('');
