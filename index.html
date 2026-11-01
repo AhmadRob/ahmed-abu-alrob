@@ -385,9 +385,9 @@ html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, 
 @media (prefers-reduced-motion: reduce) { .grain { animation: none; } .hk .hl > span { transform: none; transition: none; } }
 
 /* ── the blade rail: progress and chapters ── */
-.rail-b { position: fixed; z-index: 47; right: calc(var(--gut-r) / 2 - 1px); top: 96px; bottom: 112px; width: 30px; pointer-events: none; }
+.rail-b { --rh: clamp(300px, 54vh, 480px); position: fixed; z-index: 47; right: calc(var(--gut-r) / 2 - 1px); top: calc(50% - var(--rh) / 2 + 6px); height: var(--rh); bottom: auto; width: 30px; pointer-events: none; }
 .rail-b .hit { position: absolute; right: -16px; top: -34px; bottom: -24px; width: 46px; pointer-events: auto; }
-.rail-b::before { content: ""; position: absolute; right: -16px; top: -40px; bottom: -30px; width: 210px; background: var(--hdr-bg); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-left: 1px solid var(--hair); opacity: 0; transform: translateX(16px); transition: opacity .3s, transform .4s cubic-bezier(.2,.8,.2,1); }
+.rail-b::before { content: ""; position: absolute; right: -40px; top: -90px; bottom: -80px; width: 300px; background: radial-gradient(ellipse 100% 62% at 100% 50%, var(--white) 52%, color-mix(in srgb, var(--white) 75%, transparent) 72%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); opacity: 0; transform: translateX(16px); transition: opacity .35s, transform .45s cubic-bezier(.2,.8,.2,1); }
 .rail-b:hover::before { opacity: 1; transform: none; }
 .rail-b .steel { position: absolute; right: 0; top: 14px; bottom: 0; width: 2px; background: linear-gradient(var(--ink) 0 0) left / 1px 100% no-repeat; opacity: .5; }
 .rail-b .steel::after { content: ""; position: absolute; left: -3px; bottom: -10px; border-left: 3.5px solid transparent; border-right: 3.5px solid transparent; border-top: 12px solid var(--ink); opacity: 1; }
@@ -408,7 +408,7 @@ html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, 
 @media (max-width: 899px) { .rail-b { display: none; } }
 html[dir="rtl"] .rail-b { right: auto; left: calc(var(--gut) / 2 - 1px); }
 html[dir="rtl"] .rail-b .hit { right: auto; left: -16px; }
-html[dir="rtl"] .rail-b::before { right: auto; left: -16px; border-left: 0; border-right: 1px solid var(--hair); transform: translateX(-16px); }
+html[dir="rtl"] .rail-b::before { right: auto; left: -40px; background: radial-gradient(ellipse 100% 62% at 0% 50%, var(--white) 52%, color-mix(in srgb, var(--white) 75%, transparent) 72%, transparent 100%); transform: translateX(-16px); }
 html[dir="rtl"] .rail-b:hover::before { transform: none; }
 html[dir="rtl"] .rail-b .steel, html[dir="rtl"] .rail-b .lit { right: auto; left: 0; }
 html[dir="rtl"] .rail-b .guard { right: auto; left: -7px; }
