@@ -202,7 +202,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .mq span { display: flex; align-items: center; gap: .5em; padding-inline-end: .5em; font-weight: 800; font-stretch: 125%; font-size: clamp(2rem, 5vw, 4.6rem); line-height: 1; letter-spacing: -.03em; text-transform: uppercase; white-space: nowrap; }
 .mq span i { width: .26em; height: .26em; border-radius: 50%; background: var(--red); display: inline-block; }
 .mq span .o { color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
-html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, var(--ink) 16%, transparent); }
+html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, var(--red) 24%, var(--white)); }
+:root.cinema html[lang="ar"] .mq span .o, html.cinema[lang="ar"] .mq span .o { color: color-mix(in srgb, var(--ink) 22%, var(--white)); }
 .mq span .k { font-family: var(--f-jp); font-weight: 900; color: var(--red); letter-spacing: 0; }
 
 /* ── section heads ── */
@@ -389,6 +390,16 @@ html[lang="ar"] .mq span .o { -webkit-text-stroke: 0; color: color-mix(in srgb, 
 .rail-b .hit { position: absolute; right: -16px; top: -34px; bottom: -24px; width: 46px; pointer-events: auto; }
 .rail-b::before { content: ""; position: absolute; right: -40px; top: -90px; bottom: -80px; width: 300px; background: radial-gradient(ellipse 100% 62% at 100% 50%, var(--white) 52%, color-mix(in srgb, var(--white) 75%, transparent) 72%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); opacity: 0; transform: translateX(16px); transition: opacity .35s, transform .45s cubic-bezier(.2,.8,.2,1); }
 .rail-b:hover::before { opacity: 1; transform: none; }
+/* dock-style magnifier: no panel; kanji swell as the cursor moves along the blade, only the nearest shows its name */
+.rail-b::before { display: none !important; }
+.rail-b .mk b { opacity: 1 !important; font-size: .9rem; transform-origin: 100% 50%; transition: color .3s, transform .18s cubic-bezier(.2,.8,.2,1) !important; text-shadow: 0 0 3px var(--white), 0 0 8px var(--white); }
+html[dir="rtl"] .rail-b .mk b { transform-origin: 0 50%; }
+.rail-b .mk span { opacity: 0 !important; transform: translateX(8px) !important; transition: opacity .2s, transform .25s, margin .18s cubic-bezier(.2,.8,.2,1) !important; text-shadow: 0 0 2px var(--white), 0 0 5px var(--white), 0 0 9px var(--white), 0 0 14px var(--white); color: var(--ink); font-size: .7rem; font-weight: 500; }
+html[dir="rtl"] .rail-b .mk span { transform: translateX(-8px) !important; }
+.rail-b .mk.near span { opacity: 1 !important; transform: none !important; }
+.rail-b .mk.near b { color: var(--red); }
+.rail-b .mk.done b { opacity: .5 !important; }
+
 .rail-b .steel { position: absolute; right: 0; top: 14px; bottom: 0; width: 2px; background: linear-gradient(var(--ink) 0 0) left / 1px 100% no-repeat; opacity: .5; }
 .rail-b .steel::after { content: ""; position: absolute; left: -3px; bottom: -10px; border-left: 3.5px solid transparent; border-right: 3.5px solid transparent; border-top: 12px solid var(--ink); opacity: 1; }
 .rail-b .guard { position: absolute; right: -7px; top: 6px; width: 16px; height: 2px; background: var(--ink); }
@@ -1939,12 +1950,35 @@ window.SamuraiAudio = function (ac) {
   });
   const endRail = () => { if (!railDrag) return; railDrag = null; rail.classList.remove('drag'); };
   collar.addEventListener('pointerup', endRail); collar.addEventListener('pointercancel', endRail);
+
+  // ───────── the blade as a dock: kanji swell as the cursor runs along it ─────────
+  {
+    let dockOn = false, dockRaf = 0, dockY = 0;
+    const restScale = i => i === activeCh ? 1.3 : 1;
+    const paintDock = () => { dockRaf = 0;
+      let best = -1, bd = 1e9;
+      marks.forEach((m, i) => { const r = m.getBoundingClientRect(), cy = r.top + r.height / 2, d = Math.abs(cy - dockY);
+        const g = dockOn ? Math.exp(-Math.pow(d / 64, 2)) : 0, sc = Math.max(restScale(i), 1 + 1.5 * g);
+        const kb = m.querySelector('b'); kb.style.transform = `scale(${sc.toFixed(3)})`; m.querySelector('span').style.marginInlineEnd = `${((sc - 1) * kb.offsetWidth).toFixed(1)}px`;
+        if (dockOn && d < bd) { bd = d; best = i; } });
+      marks.forEach((m, i) => m.classList.toggle('near', i === best && bd < 40));
+    };
+    const queue = () => { if (!dockRaf) dockRaf = requestAnimationFrame(paintDock); };
+    addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse' || !marks.length) return;
+      const r = rail.getBoundingClientRect(), rtl = document.documentElement.dir === 'rtl';
+      const inX = rtl ? e.clientX >= r.left - 20 && e.clientX <= r.right + 170 : e.clientX >= r.left - 170 && e.clientX <= r.right + 20;
+      const on = inX && e.clientY >= r.top - 30 && e.clientY <= r.bottom + 30;
+      if (on || dockOn) { dockOn = on; dockY = e.clientY; queue(); }
+    }, { passive: true });
+    window.__dockRest = queue;
+  }
   let activeCh = -1;
   function updateRail(y) {
     const k = clamp(railK(y), 0, 1);
     collar.style.translate = `0 ${(railH * k).toFixed(1)}px`; lit.style.scale = `1 ${k.toFixed(4)}`;
     let a = 0; chapterY.forEach((cy, i) => { if (y >= cy - innerHeight * .28) a = i; });
-    if (a !== activeCh) { if (activeCh >= 0 && !tween && !railDrag) slash(a > activeCh ? 1 : -1, false, true); activeCh = a; marks.forEach((m, i) => m.classList.toggle('on', i === a)); }
+    if (a !== activeCh) { if (activeCh >= 0 && !tween && !railDrag) slash(a > activeCh ? 1 : -1, false, true); activeCh = a; marks.forEach((m, i) => m.classList.toggle('on', i === a)); if (window.__dockRest) window.__dockRest(); }
   }
 
   // ───────── the stance wheel ─────────
